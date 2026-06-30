@@ -76,6 +76,28 @@ export async function getTodayTodos() {
   return todos.map(mapTodo);
 }
 
+export async function getCalendarTasks(year: number, month: number) {
+  const session = await auth();
+  if (!session?.user?.id) return [];
+
+  const start = new Date(year, month, 1);
+  const end = new Date(year, month + 1, 0, 23, 59, 59, 999);
+
+  const todos = await prisma.todo.findMany({
+    where: { userId: session.user.id, OR: [{ deadline: { gte: start, lte: end } }, { createdAt: { gte: start, lte: end } }] },
+    select: { deadline: true, createdAt: true },
+  });
+
+  const counts: Record<string, number> = {};
+  for (const t of todos) {
+    const date = t.deadline
+      ? `${t.deadline.getFullYear()}-${String(t.deadline.getMonth() + 1).padStart(2, "0")}-${String(t.deadline.getDate()).padStart(2, "0")}`
+      : `${t.createdAt.getFullYear()}-${String(t.createdAt.getMonth() + 1).padStart(2, "0")}-${String(t.createdAt.getDate()).padStart(2, "0")}`;
+    counts[date] = (counts[date] ?? 0) + 1;
+  }
+
+  return Object.entries(counts).map(([date, count]) => ({ date, count }));
+}
 export async function getTodayStats() {
   const session = await auth();
   if (!session?.user?.id) return { total: 0, completed: 0 };
@@ -115,13 +137,23 @@ export async function getTomorrowTodos() {
 
   const { start, end } = getTomorrowRange();
 
-  const todos = await prisma.todo.findMany({
+  const deadlineTasks = await prisma.todo.findMany({
     where: { userId: session.user.id, deadline: { gte: start, lte: end } },
     orderBy: { priority: "desc" },
     take: 3,
   });
 
-  return todos.map((t) => ({ id: t.id, title: t.title, done: t.completed }));
+  const { start: todayStart } = getTodayRange();
+  const carryOver = await prisma.todo.findMany({
+    where: { userId: session.user.id, completed: false, deadline: null, createdAt: { gte: todayStart } },
+    orderBy: { priority: "desc" },
+    take: 2,
+  });
+
+  const mapped = deadlineTasks.map((t) => ({ id: t.id, title: t.title, done: t.completed, carryOver: false as const }));
+  const mappedCarry = carryOver.map((t) => ({ id: t.id, title: t.title, done: t.completed, carryOver: true as const }));
+
+  return [...mapped, ...mappedCarry].slice(0, 5);
 }
 
 export async function createTodo(data: CreateTodoInput) {
@@ -137,6 +169,7 @@ export async function createTodo(data: CreateTodoInput) {
       priority: validated.data.priority,
       userId: session.user.id,
       ...(validated.data.categoryId ? { categoryId: validated.data.categoryId } : {}),
+      ...(validated.data.deadline ? { deadline: new Date(validated.data.deadline) } : {}),
     },
     include: { category: { select: { id: true, name: true, color: true } } },
   });
@@ -196,6 +229,29 @@ export async function deleteTodo(id: string) {
 
   await prisma.todo.delete({ where: { id } });
   return { success: true };
+}
+
+export async function getDateTodos(dateStr: string) {
+  const session = await auth();
+  if (!session?.user?.id) return [];
+
+  const [year, month, day] = dateStr.split("-").map(Number);
+  const start = new Date(year, month - 1, day, 0, 0, 0, 0);
+  const end = new Date(year, month - 1, day, 23, 59, 59, 999);
+
+  const todos = await prisma.todo.findMany({
+    where: {
+      userId: session.user.id,
+      OR: [
+        { deadline: { gte: start, lte: end } },
+        { deadline: null, createdAt: { gte: start, lte: end } },
+      ],
+    },
+    include: { category: { select: { id: true, name: true, color: true } } },
+    orderBy: [{ completed: "asc" }, { priority: "desc" }, { createdAt: "desc" }],
+  });
+
+  return todos.map(mapTodo);
 }
 
 export async function searchTodos(query: string) {

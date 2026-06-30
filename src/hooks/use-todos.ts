@@ -6,6 +6,8 @@ import {
   getTodayStats,
   getFocusTask,
   getTomorrowTodos,
+  getCalendarTasks,
+  getDateTodos,
   createTodo,
   toggleTodo,
   updateTodo,
@@ -41,6 +43,21 @@ export function useTomorrowTodos() {
   return useQuery({
     queryKey: [...keys.all, "tomorrow"],
     queryFn: () => getTomorrowTodos(),
+  });
+}
+
+export function useCalendarTasks(year: number, month: number) {
+  return useQuery({
+    queryKey: [...keys.all, "calendar", year, month],
+    queryFn: () => getCalendarTasks(year, month),
+  });
+}
+
+export function useDateTodos(dateStr: string | null) {
+  return useQuery({
+    queryKey: [...keys.all, "date", dateStr],
+    queryFn: () => getDateTodos(dateStr!),
+    enabled: !!dateStr,
   });
 }
 

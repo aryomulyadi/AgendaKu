@@ -78,11 +78,22 @@
 
 ---
 
-## Phase 6
+## Phase 6 — Profile & Settings
 
-- [ ] Profile
-- [ ] Settings
-- [ ] Dark Mode
+- [x] Settings page (/dashboard/pengaturan) — update name, email, change password
+- [x] Server actions: getProfile, updateProfile, changePassword
+- [x] Zod schemas: updateProfileSchema, changePasswordSchema
+- [ ] Profile page (future)
+
+## Phase 6b — Calendar & Tomorrow Preview
+
+- [x] Calendar date picker — klik tanggal di MiniCalendar, TodayTaskList menampilkan tugas di tanggal itu
+- [x] Server action: getDateTodos(dateStr) — filter tasks by specific date
+- [x] Hook: useDateTodos(dateStr)
+- [x] MiniCalendar — selectedDate + onDateSelect props, ring highlight pada tanggal dipilih
+- [x] TodayTaskList — selectedDate prop, dynamic header ("Tugas, Senin 29 Juni 2026")
+- [x] TomorrowPreview — CRUD lengkap (TaskInput + toggle + delete), deadline otomatis set ke besok
+- [x] createTodoSchema — tambah field deadline (nullable, optional)
 
 ---
 
@@ -90,10 +101,8 @@
 
 - [ ] Responsive
 - [ ] Loading
-- [ ] Empty State
+- [ ] Empty State (partial — already handled per section)
 - [ ] Error Handling
-
----
 
 ## Phase 8
 
