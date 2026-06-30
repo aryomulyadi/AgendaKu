@@ -8,7 +8,7 @@ export function Navbar() {
     <header className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur-sm">
       <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-5 sm:px-8">
         <Link href="/" className="flex items-center gap-2.5 transition-opacity hover:opacity-80">
-          <img src="/AgendaKu_logo.png" alt="AgendaKu" width={28} height={28} className="shrink-0 rounded-md object-contain" />
+          <img src="/AgendaKu_logo2.png" alt="AgendaKu" width={28} height={28} className="shrink-0 rounded-md object-contain" />
           <span className="text-base font-semibold tracking-tight text-foreground">
             AgendaKu
           </span>
