@@ -1,24 +1,27 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import { numToPriority, getTomorrowISO } from "@/lib/utils";
 import { TaskItem } from "@/components/task/task-item";
 import { TaskInput } from "@/components/task/task-input";
 import { useDateTodos, useCreateTodo, useToggleTodo, useUpdateTodo, useDeleteTodo } from "@/hooks/use-todos";
+import { useCategories } from "@/hooks/use-categories";
 
 export default function BesokPage() {
   const tomorrow = useMemo(() => getTomorrowISO(), []);
   const { data: todos, isLoading, isError } = useDateTodos(tomorrow);
+  const { data: categories } = useCategories();
   const createMutation = useCreateTodo();
   const toggleMutation = useToggleTodo();
   const updateMutation = useUpdateTodo();
   const deleteMutation = useDeleteTodo();
+  const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
 
   function handleCreate(title: string) {
     createMutation.mutate(
-      { title, priority: "MEDIUM", deadline: tomorrow },
-      { onError: () => toast.error("Gagal menambahkan tugas") },
+      { title, priority: "MEDIUM", deadline: tomorrow, categoryId: selectedCategoryId },
+      { onError: () => toast.error("Gagal menambahkan tugas"), onSuccess: () => setSelectedCategoryId(null) },
     );
   }
 
@@ -90,6 +93,9 @@ export default function BesokPage() {
           placeholder="Rencanakan untuk besok..."
           onSubmit={handleCreate}
           isPending={createMutation.isPending}
+          categories={categories ?? []}
+          selectedCategoryId={selectedCategoryId}
+          onCategoryChange={setSelectedCategoryId}
         />
       </div>
     </div>

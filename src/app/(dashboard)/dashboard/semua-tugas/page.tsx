@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { toast } from "sonner";
 import { cn, numToPriority } from "@/lib/utils";
 import { Search } from "lucide-react";
@@ -13,6 +13,32 @@ import {
 } from "@/hooks/use-todos";
 
 type Filter = "all" | "active" | "done";
+
+const dayNames = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+const monthNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+
+function toDateKey(iso: string) {
+  return iso.slice(0, 10);
+}
+
+function formatGroupHeader(dateKey: string) {
+  const today = new Date();
+  const todayKey = toDateKey(today.toISOString());
+  const tomorrow = new Date(today);
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  const tomorrowKey = toDateKey(tomorrow.toISOString());
+  const yesterday = new Date(today);
+  yesterday.setDate(yesterday.getDate() - 1);
+  const yesterdayKey = toDateKey(yesterday.toISOString());
+
+  if (dateKey === todayKey) return "Hari Ini";
+  if (dateKey === tomorrowKey) return "Besok";
+  if (dateKey === yesterdayKey) return "Kemarin";
+
+  const [y, m, d] = dateKey.split("-").map(Number);
+  const date = new Date(y, m - 1, d);
+  return `${dayNames[date.getDay()]}, ${d} ${monthNames[date.getMonth()]} ${y}`;
+}
 
 export default function SemuaTugasPage() {
   const { data: todos, isLoading, isError } = useAllTodos();
@@ -51,6 +77,17 @@ export default function SemuaTugasPage() {
     if (!searchQuery.trim()) return true;
     return t.title.toLowerCase().includes(searchQuery.toLowerCase());
   });
+
+  const groups = useMemo(() => {
+    const map = new Map<string, typeof filtered>();
+    for (const task of filtered) {
+      const key = toDateKey(task.deadline ?? task.createdAt);
+      const group = map.get(key);
+      if (group) group.push(task);
+      else map.set(key, [task]);
+    }
+    return Array.from(map.entries()).sort(([a], [b]) => a.localeCompare(b));
+  }, [filtered]);
 
   const totalCount = todos?.length ?? 0;
   const activeCount = todos?.filter((t) => !t.done).length ?? 0;
@@ -104,23 +141,35 @@ export default function SemuaTugasPage() {
           ))}
         </div>
       ) : (
-        <div className="space-y-1">
-          {filtered.map((task) => (
-            <TaskItem
-              key={task.id}
-              id={task.id}
-              title={task.title}
-              done={task.done}
-              priority={task.priority}
-              deadline={task.deadline}
-              categoryColor={task.categoryColor}
-              categoryName={task.categoryName}
-              onToggle={handleToggle}
-              onUpdate={handleUpdate}
-              onDelete={handleDelete}
-            />
+        <div className="space-y-6">
+          {groups.map(([dateKey, tasks]) => (
+            <div key={dateKey}>
+              <div className="mb-2 flex items-center gap-2">
+                <h2 className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground/50">
+                  {formatGroupHeader(dateKey)}
+                </h2>
+                <div className="flex-1 border-t border-border/40" />
+              </div>
+              <div className="space-y-1">
+                {tasks.map((task) => (
+                  <TaskItem
+                    key={task.id}
+                    id={task.id}
+                    title={task.title}
+                    done={task.done}
+                    priority={task.priority}
+                    deadline={task.deadline}
+                    categoryColor={task.categoryColor}
+                    categoryName={task.categoryName}
+                    onToggle={handleToggle}
+                    onUpdate={handleUpdate}
+                    onDelete={handleDelete}
+                  />
+                ))}
+              </div>
+            </div>
           ))}
-          {filtered.length === 0 && (
+          {groups.length === 0 && (
             <p className="py-8 text-center text-sm text-muted-foreground/60">
               {searchQuery
                 ? "Tidak ada tugas yang cocok"

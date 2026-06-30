@@ -131,6 +131,13 @@
 - [x] Search debounce 300ms di DashboardHeader (`searchQuery` state via `useEffect` + `setTimeout`)
 - [x] Targeted query invalidation — tiap mutation invalidate subset query spesifik, bukan semua `["todos"]`
 - [x] `getCompletedTodos` — limit dinaikkan 50→200 + return `{ todos, total, hasMore }`
+- [x] TaskItem: category dot + tooltip diganti → top colored bar 3px + badge inline (pill dot + nama) sebelum checkbox
+- [x] Besok page: tambah kategori selector di TaskInput (useCategories + selectedCategoryId)
+- [x] Semua Tugas: grouping task per tanggal spesifik (Hari Ini/Besok/Kemarin/tanggal) + header separator
+- [x] Kalender: hapus "Hari ini" button (redundan, tidak berfungsi)
+- [x] mapTodo: tambah `createdAt` ke return value (untuk grouping di semua-tugas)
+- [x] Sidebar: hapus "Selesai" dari navItems + import CheckCheck
+- [x] TomorrowPreview: tambah kategori selector (selectedCategoryId state + props ke TaskInput)
 
 ## Phase 8 — Rilis
 

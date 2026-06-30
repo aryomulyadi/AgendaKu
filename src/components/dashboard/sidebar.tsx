@@ -10,7 +10,6 @@ import {
   ListTodo,
   Tags,
   Calendar,
-  CheckCheck,
   Settings,
   Menu,
 } from "lucide-react";
@@ -25,7 +24,6 @@ const navItems = [
   { label: "Semua Tugas", href: "/dashboard/semua-tugas", icon: ListTodo },
   { label: "Kategori", href: "/dashboard/kategori", icon: Tags },
   { label: "Kalender", href: "/dashboard/kalender", icon: Calendar },
-  { label: "Selesai", href: "/dashboard/selesai", icon: CheckCheck },
   { label: "Pengaturan", href: "/dashboard/pengaturan", icon: Settings },
 ];
 

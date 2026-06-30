@@ -55,13 +55,6 @@ export default function KalenderPage() {
     setSelectedDay(null);
   }
 
-  function goToday() {
-    const now = new Date();
-    setYear(now.getFullYear());
-    setMonth(now.getMonth());
-    setSelectedDay(now.getDate());
-  }
-
   function isToday(day: number) {
     return day === today.getDate() && month === today.getMonth() && year === today.getFullYear();
   }
@@ -96,16 +89,7 @@ export default function KalenderPage() {
 
   return (
     <div className="mx-auto max-w-4xl space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-lg font-semibold tracking-tight text-foreground">Kalender</h1>
-        <button
-          type="button"
-          onClick={goToday}
-          className="rounded-[8px] border border-border/60 bg-surface px-3 py-1.5 text-xs font-medium text-foreground transition-all hover:bg-muted/50"
-        >
-          Hari ini
-        </button>
-      </div>
+      <h1 className="text-lg font-semibold tracking-tight text-foreground">Kalender</h1>
 
       <div className="rounded-[14px] border border-border/60 bg-surface p-4 sm:p-5">
         <div className="mb-4 flex items-center justify-between">

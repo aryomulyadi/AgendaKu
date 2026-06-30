@@ -46,6 +46,7 @@ function mapTodo(t: RawTodo) {
     done: t.completed,
     priority: (t.priority === "HIGH" ? 3 : t.priority === "MEDIUM" ? 2 : 1) as 1 | 2 | 3,
     deadline: t.deadline?.toISOString() ?? null,
+    createdAt: t.createdAt.toISOString(),
     categoryId: t.categoryId,
     categoryName: t.category?.name ?? null,
     categoryColor: t.category?.color ?? null,

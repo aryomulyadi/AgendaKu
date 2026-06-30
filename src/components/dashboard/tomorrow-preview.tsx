@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { toast } from "sonner";
 import { cn, numToPriority } from "@/lib/utils";
 import { TaskItem } from "@/components/task/task-item";
@@ -27,10 +28,12 @@ export function TomorrowPreview() {
   const updateMutation = useUpdateTodo();
   const deleteMutation = useDeleteTodo();
 
+  const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
+
   function handleCreate(title: string) {
     createMutation.mutate(
-      { title, priority: "MEDIUM", deadline: getTomorrowISO() },
-      { onError: () => toast.error("Gagal menambahkan tugas") },
+      { title, priority: "MEDIUM", deadline: getTomorrowISO(), categoryId: selectedCategoryId },
+      { onError: () => toast.error("Gagal menambahkan tugas"), onSuccess: () => setSelectedCategoryId(null) },
     );
   }
 
@@ -134,6 +137,8 @@ export function TomorrowPreview() {
           onSubmit={handleCreate}
           isPending={createMutation.isPending}
           categories={categories ?? []}
+          selectedCategoryId={selectedCategoryId}
+          onCategoryChange={setSelectedCategoryId}
         />
       </div>
     </section>

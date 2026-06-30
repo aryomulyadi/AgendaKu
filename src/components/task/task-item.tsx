@@ -91,68 +91,68 @@ export function TaskItem({
 
   const showBar = !done && priority >= 2;
 
+  const showCategoryBar = !!categoryColor && !done;
+
   return (
     <div
       className={cn(
-        "group flex rounded-[10px] border transition-all duration-150 hover:-translate-y-[1px]",
+        "group flex-col rounded-[10px] border transition-all duration-150 hover:-translate-y-[1px] overflow-hidden",
         done
           ? "border-success/15 bg-success/5 hover:border-success/25 hover:bg-success/[0.07]"
           : "border-border/60 bg-surface hover:border-border hover:bg-white/[0.06]",
         className,
       )}
     >
-      {showBar && (
-        <button
-          type="button"
-          onClick={handlePriorityClick}
-          className={cn(
-            "w-[3px] shrink-0 cursor-pointer rounded-l-[10px] transition-colors duration-150",
-            priority === 3 && "bg-primary hover:bg-primary/80",
-            priority === 2 && "bg-[#F7D87F] hover:bg-[#F7D87F]/80",
-          )}
-          title={priority === 3 ? "Prioritas Tinggi" : "Prioritas Sedang"}
-        />
+      {showCategoryBar && (
+        <div className="h-[3px] shrink-0" style={{ backgroundColor: categoryColor }} />
       )}
-      <div className={cn("flex items-center gap-2.5 flex-1 px-3.5 py-2.5", showBar ? "rounded-r-[10px]" : "rounded-[10px]")}>
-        <button
-          type="button"
-          onClick={() => onToggle?.(id)}
-          className={cn(
-            "flex size-5 shrink-0 items-center justify-center rounded-full border-2 transition-all duration-150 active:scale-90",
-            done
-              ? "border-success bg-success text-white"
-              : "border-muted-foreground/35 group-hover:border-primary/50",
-          )}
-        >
-          {done && (
-            <svg className="size-3" viewBox="0 0 12 12" fill="none">
-              <path
-                d="M2.5 6L5 8.5L9.5 3.5"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          )}
-        </button>
-
-        {categoryColor && !done && (
-          <div className="relative group/tip">
-            <div
-              className="size-2 shrink-0 rounded-full cursor-help"
-              style={{ backgroundColor: categoryColor }}
-            />
-            <div className="pointer-events-none absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 whitespace-nowrap rounded-[6px] border border-border bg-card px-2 py-1 text-[11px] font-medium text-foreground opacity-0 shadow-sm transition-opacity duration-150 group-hover/tip:opacity-100">
-              <div className="flex items-center gap-1.5">
-                <div className="size-2 rounded-full shrink-0" style={{ backgroundColor: categoryColor }} />
-                {categoryName ?? "Kategori"}
-              </div>
-            </div>
-          </div>
+      <div className="flex flex-1">
+        {showBar && (
+          <button
+            type="button"
+            onClick={handlePriorityClick}
+            className={cn(
+              "w-[3px] shrink-0 cursor-pointer transition-colors duration-150",
+              priority === 3 && "bg-primary hover:bg-primary/80",
+              priority === 2 && "bg-[#F7D87F] hover:bg-[#F7D87F]/80",
+            )}
+            title={priority === 3 ? "Prioritas Tinggi" : "Prioritas Sedang"}
+          />
         )}
+        <div className="flex items-center gap-2.5 flex-1 px-3.5 py-2.5">
+          {categoryColor && categoryName && !done && (
+            <div
+              className="flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-medium leading-none"
+              style={{ backgroundColor: `${categoryColor}1A`, color: categoryColor }}
+            >
+              <div className="size-1.5 rounded-full shrink-0" style={{ backgroundColor: categoryColor }} />
+              {categoryName}
+            </div>
+          )}
+          <button
+            type="button"
+            onClick={() => onToggle?.(id)}
+            className={cn(
+              "flex size-5 shrink-0 items-center justify-center rounded-full border-2 transition-all duration-150 active:scale-90",
+              done
+                ? "border-success bg-success text-white"
+                : "border-muted-foreground/35 group-hover:border-primary/50",
+            )}
+          >
+            {done && (
+              <svg className="size-3" viewBox="0 0 12 12" fill="none">
+                <path
+                  d="M2.5 6L5 8.5L9.5 3.5"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            )}
+          </button>
 
-        {editing ? (
+          {editing ? (
           <input
             ref={inputRef}
             type="text"
@@ -204,6 +204,7 @@ export function TaskItem({
             <Trash2 className="size-3.5 text-muted-foreground/40 hover:text-destructive" />
           </button>
         )}
+      </div>
       </div>
     </div>
   );
