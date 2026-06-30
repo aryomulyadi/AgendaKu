@@ -14,21 +14,20 @@ export function LandingContent() {
           <div className="grid grid-cols-1 gap-8 lg:grid-cols-[45fr_55fr] lg:gap-12">
             <div className="flex flex-col justify-center space-y-4 pt-4 lg:pt-0">
               <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
-                Tugas hari ini.
+                Fokus hari ini. Siap untuk besok.
               </h1>
               <p className="text-base text-foreground/85 sm:text-lg">
-                Besok sudah terlihat.
+                Semua aktivitasmu, dalam satu tempat.
               </p>
               <p className="text-sm leading-relaxed text-muted-foreground">
-                AgendaKu membantu kamu fokus pada tugas hari ini,
-                sambil tetap menyiapkan apa yang perlu dikerjakan besok.
+                AgendaKu membantu kamu mencatat, mengatur, dan menyelesaikan agenda harian dengan tetap menyiapkan apa yang perlu dikerjakan besok.
               </p>
               <div className="pt-2">
                 <Link
                   href="/register"
                   className="inline-flex h-10 items-center justify-center rounded-[10px] bg-primary px-5 text-sm font-medium text-primary-foreground shadow-xs transition-all duration-150 hover:bg-[#D0311E] active:translate-y-px"
                 >
-                  Mulai Gratis
+                  Mulai Sekarang
                 </Link>
               </div>
             </div>

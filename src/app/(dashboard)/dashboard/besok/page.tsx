@@ -21,12 +21,12 @@ export default function BesokPage() {
   function handleCreate(title: string) {
     createMutation.mutate(
       { title, priority: "MEDIUM", deadline: tomorrow, categoryId: selectedCategoryId },
-      { onError: () => toast.error("Gagal menambahkan tugas"), onSuccess: () => setSelectedCategoryId(null) },
+      { onError: () => toast.error("Gagal menambahkan agenda"), onSuccess: () => setSelectedCategoryId(null) },
     );
   }
 
   function handleToggle(id: string) {
-    toggleMutation.mutate(id, { onError: () => toast.error("Gagal mengubah tugas") });
+    toggleMutation.mutate(id, { onError: () => toast.error("Gagal mengubah agenda") });
   }
 
   function handleUpdate(id: string, data: { title?: string; priority?: number; deadline?: string | null }) {
@@ -36,12 +36,12 @@ export default function BesokPage() {
     if (data.deadline !== undefined) payload.deadline = data.deadline;
     updateMutation.mutate(
       { id, data: payload },
-      { onError: () => toast.error("Gagal memperbarui tugas") },
+      { onError: () => toast.error("Gagal memperbarui agenda") },
     );
   }
 
   function handleDelete(id: string) {
-    deleteMutation.mutate(id, { onError: () => toast.error("Gagal menghapus tugas") });
+    deleteMutation.mutate(id, { onError: () => toast.error("Gagal menghapus agenda") });
   }
 
   const activeCount = todos?.filter((t) => !t.done).length ?? 0;
@@ -49,14 +49,14 @@ export default function BesokPage() {
   return (
     <div className="mx-auto max-w-4xl space-y-6">
       <div>
-        <h1 className="text-lg font-semibold tracking-tight text-foreground">Tugas Besok</h1>
+        <h1 className="text-lg font-semibold tracking-tight text-foreground">Agenda Besok</h1>
         <p className="mt-0.5 text-sm text-muted-foreground/60">
-          {isLoading ? "..." : `${todos?.length ?? 0} tugas — ${activeCount} tersisa`}
+          {isLoading ? "..." : `${todos?.length ?? 0} agenda — ${activeCount} tersisa`}
         </p>
       </div>
 
       {isError ? (
-        <p className="py-4 text-center text-sm text-muted-foreground/60">Gagal memuat tugas</p>
+        <p className="py-4 text-center text-sm text-muted-foreground/60">Gagal memuat agenda</p>
       ) : isLoading ? (
         <div className="space-y-1">
           {[1, 2, 3].map((i) => (
@@ -82,7 +82,7 @@ export default function BesokPage() {
           ))}
           {todos?.length === 0 && (
             <p className="py-4 text-center text-sm text-muted-foreground/60">
-              Belum ada tugas untuk besok
+              Belum ada agenda untuk besok
             </p>
           )}
         </div>

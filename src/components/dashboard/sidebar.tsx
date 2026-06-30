@@ -21,7 +21,7 @@ const navItems = [
   { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
   { label: "Hari Ini", href: "/dashboard/hari-ini", icon: Sun },
   { label: "Besok", href: "/dashboard/besok", icon: CalendarDays },
-  { label: "Semua Tugas", href: "/dashboard/semua-tugas", icon: ListTodo },
+  { label: "Semua Agenda", href: "/dashboard/semua-tugas", icon: ListTodo },
   { label: "Kategori", href: "/dashboard/kategori", icon: Tags },
   { label: "Kalender", href: "/dashboard/kalender", icon: Calendar },
   { label: "Pengaturan", href: "/dashboard/pengaturan", icon: Settings },
@@ -68,9 +68,7 @@ export function Sidebar() {
     <>
       <aside className="fixed inset-y-0 left-0 z-30 hidden w-56 flex-col border-r border-border bg-card lg:flex">
         <div className="flex h-14 items-center gap-2.5 border-b border-border px-5">
-          <div className="flex size-7 items-center justify-center rounded-md bg-primary text-xs font-bold text-primary-foreground shadow-xs">
-            K
-          </div>
+          <img src="/AgendaKu_logo.png" alt="AgendaKu" width={28} height={28} className="shrink-0 rounded-md object-contain" />
           <span className="text-base font-semibold tracking-tight text-foreground">
             AgendaKu
           </span>
@@ -85,9 +83,7 @@ export function Sidebar() {
           </SheetTrigger>
           <SheetContent side="left" className="w-56 p-0">
             <div className="flex h-14 items-center gap-2.5 border-b border-border px-5">
-              <div className="flex size-7 items-center justify-center rounded-md bg-primary text-xs font-bold text-primary-foreground shadow-xs">
-                K
-              </div>
+              <img src="/AgendaKu_logo.png" alt="AgendaKu" width={28} height={28} className="shrink-0 rounded-md object-contain" />
               <span className="text-base font-semibold tracking-tight text-foreground">
                 AgendaKu
               </span>

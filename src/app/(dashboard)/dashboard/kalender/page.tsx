@@ -69,7 +69,7 @@ export default function KalenderPage() {
   }
 
   function handleToggle(id: string) {
-    toggleMutation.mutate(id, { onError: () => toast.error("Gagal mengubah tugas") });
+    toggleMutation.mutate(id, { onError: () => toast.error("Gagal mengubah agenda") });
   }
 
   function handleUpdate(id: string, data: { title?: string; priority?: number; deadline?: string | null }) {
@@ -79,12 +79,12 @@ export default function KalenderPage() {
     if (data.deadline !== undefined) payload.deadline = data.deadline;
     updateMutation.mutate(
       { id, data: payload },
-      { onError: () => toast.error("Gagal memperbarui tugas") },
+      { onError: () => toast.error("Gagal memperbarui agenda") },
     );
   }
 
   function handleDelete(id: string) {
-    deleteMutation.mutate(id, { onError: () => toast.error("Gagal menghapus tugas") });
+    deleteMutation.mutate(id, { onError: () => toast.error("Gagal menghapus agenda") });
   }
 
   return (
@@ -167,7 +167,7 @@ export default function KalenderPage() {
             {selectedDay} {monthNames[month]} {year}
           </h2>
           {todosError ? (
-            <p className="py-4 text-center text-sm text-muted-foreground/60">Gagal memuat tugas</p>
+            <p className="py-4 text-center text-sm text-muted-foreground/60">Gagal memuat agenda</p>
           ) : todosLoading ? (
             <div className="space-y-1">
               {[1, 2].map((i) => (
@@ -193,7 +193,7 @@ export default function KalenderPage() {
               ))}
               {selectedTodos?.length === 0 && (
                 <p className="py-4 text-center text-sm text-muted-foreground/60">
-                  Tidak ada tugas di tanggal ini
+                  Tidak ada agenda di tanggal ini
                 </p>
               )}
             </div>

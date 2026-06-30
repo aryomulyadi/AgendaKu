@@ -49,7 +49,7 @@ export default function SemuaTugasPage() {
   const [filter, setFilter] = useState<Filter>("all");
 
   function handleToggle(id: string) {
-    toggleMutation.mutate(id, { onError: () => toast.error("Gagal mengubah tugas") });
+    toggleMutation.mutate(id, { onError: () => toast.error("Gagal mengubah agenda") });
   }
 
   function handleUpdate(id: string, data: { title?: string; priority?: number; deadline?: string | null }) {
@@ -61,12 +61,12 @@ export default function SemuaTugasPage() {
     if (data.deadline !== undefined) payload.deadline = data.deadline;
     updateMutation.mutate(
       { id, data: payload },
-      { onError: () => toast.error("Gagal memperbarui tugas") },
+      { onError: () => toast.error("Gagal memperbarui agenda") },
     );
   }
 
   function handleDelete(id: string) {
-    deleteMutation.mutate(id, { onError: () => toast.error("Gagal menghapus tugas") });
+    deleteMutation.mutate(id, { onError: () => toast.error("Gagal menghapus agenda") });
   }
 
   const filtered = (todos ?? []).filter((t) => {
@@ -96,9 +96,9 @@ export default function SemuaTugasPage() {
   return (
     <div className="mx-auto max-w-4xl space-y-6">
       <div>
-        <h1 className="text-lg font-semibold tracking-tight text-foreground">Semua Tugas</h1>
+        <h1 className="text-lg font-semibold tracking-tight text-foreground">Semua Agenda</h1>
         <p className="mt-0.5 text-sm text-muted-foreground/60">
-          {isLoading ? "..." : `${totalCount} tugas — ${activeCount} aktif, ${doneCount} selesai`}
+          {isLoading ? "..." : `${totalCount} agenda — ${activeCount} aktif, ${doneCount} selesai`}
         </p>
       </div>
 
@@ -109,7 +109,7 @@ export default function SemuaTugasPage() {
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Cari tugas..."
+            placeholder="Cari agenda..."
             className="flex-1 bg-transparent text-sm text-foreground placeholder:text-muted-foreground/50 focus:outline-none"
           />
         </div>
@@ -133,7 +133,7 @@ export default function SemuaTugasPage() {
       </div>
 
       {isError ? (
-        <p className="py-8 text-center text-sm text-muted-foreground/60">Gagal memuat tugas</p>
+        <p className="py-8 text-center text-sm text-muted-foreground/60">Gagal memuat agenda</p>
       ) : isLoading ? (
         <div className="space-y-1">
           {[1, 2, 3, 4, 5].map((i) => (
@@ -172,10 +172,10 @@ export default function SemuaTugasPage() {
           {groups.length === 0 && (
             <p className="py-8 text-center text-sm text-muted-foreground/60">
               {searchQuery
-                ? "Tidak ada tugas yang cocok"
+                ? "Tidak ada agenda yang cocok"
                 : filter === "all"
-                  ? "Belum ada tugas"
-                  : `Tidak ada tugas ${filter === "active" ? "aktif" : "selesai"}`}
+                  ? "Belum ada agenda"
+                  : `Tidak ada agenda ${filter === "active" ? "aktif" : "selesai"}`}
             </p>
           )}
         </div>

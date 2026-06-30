@@ -138,6 +138,14 @@
 - [x] mapTodo: tambah `createdAt` ke return value (untuk grouping di semua-tugas)
 - [x] Sidebar: hapus "Selesai" dari navItems + import CheckCheck
 - [x] TomorrowPreview: tambah kategori selector (selectedCategoryId state + props ke TaskInput)
+- [x] Logo: placeholder SVG (public/logo.svg), ganti badge "K" di navbar + sidebar
+- [x] Logo: ganti ke AgendaKu_logo.png + rounded-md (pakai `<img>` karena PNG tidak tampil via `next/image`)
+- [x] Landing: headline/subheadline/description/CTA copy revamp
+- [x] Landing preview: mock data + categoryColor/categoryName showcase
+- [x] Landing preview: ganti contoh agenda ke general (Belanja, Olahraga, Meeting Kerjaan)
+- [x] "Tugas" → "Agenda" di semua user-facing text (11 file)
+- [x] TaskItem: hapus Calendar icon dekoratif (duplicate, tidak interaktif)
+- [x] AppPreview: ganti TaskInput → mock visual-only (tidak bisa diketik)
 
 ## Phase 8 — Rilis
 

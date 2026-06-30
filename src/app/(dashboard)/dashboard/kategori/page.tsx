@@ -78,7 +78,7 @@ export default function CategoriesPage() {
       <div>
         <h1 className="text-lg font-semibold tracking-tight text-foreground">Kategori</h1>
         <p className="mt-0.5 text-sm text-muted-foreground/70">
-          Atur dan kelompokkan tugas berdasarkan kategori
+          Atur dan kelompokkan agenda berdasarkan kategori
         </p>
       </div>
 
@@ -154,7 +154,7 @@ export default function CategoriesPage() {
               ) : (
                 <span className="flex-1 text-sm text-foreground">{cat.name}</span>
               )}
-              <span className="text-xs text-muted-foreground/50">{cat._count.todos} tugas</span>
+              <span className="text-xs text-muted-foreground/50">{cat._count.todos} agenda</span>
               <div className="flex items-center gap-1">
                 {presetColors.map((c) => (
                   <button
@@ -199,7 +199,7 @@ export default function CategoriesPage() {
             <h3 className="text-sm font-semibold text-foreground">Hapus Kategori</h3>
             <p className="mt-2 text-sm text-muted-foreground/70">
               Yakin ingin menghapus <span className="font-medium text-foreground">{deleteConfirm.name}</span>?
-              Tugas dalam kategori ini tidak akan terhapus, hanya kategorinya yang dihapus.
+              Agenda dalam kategori ini tidak akan terhapus, hanya kategorinya yang dihapus.
             </p>
             <div className="mt-4 flex items-center justify-end gap-2">
               <button

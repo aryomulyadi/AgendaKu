@@ -13,7 +13,7 @@ export function TomorrowPreview() {
           Besok
         </span>
         <span className="text-xs text-muted-foreground/25">&middot;</span>
-        <span className="text-[11px] text-muted-foreground/40">2 tugas</span>
+        <span className="text-[11px] text-muted-foreground/40">2 agenda</span>
       </div>
 
       <div className="space-y-1">

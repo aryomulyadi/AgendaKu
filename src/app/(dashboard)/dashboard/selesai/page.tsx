@@ -12,24 +12,24 @@ export default function SelesaiPage() {
   const deleteMutation = useDeleteTodo();
 
   function handleToggle(id: string) {
-    toggleMutation.mutate(id, { onError: () => toast.error("Gagal mengubah tugas") });
+    toggleMutation.mutate(id, { onError: () => toast.error("Gagal mengubah agenda") });
   }
 
   function handleDelete(id: string) {
-    deleteMutation.mutate(id, { onError: () => toast.error("Gagal menghapus tugas") });
+    deleteMutation.mutate(id, { onError: () => toast.error("Gagal menghapus agenda") });
   }
 
   return (
     <div className="mx-auto max-w-4xl space-y-6">
       <div>
-        <h1 className="text-lg font-semibold tracking-tight text-foreground">Tugas Selesai</h1>
+        <h1 className="text-lg font-semibold tracking-tight text-foreground">Agenda Selesai</h1>
         <p className="mt-0.5 text-sm text-muted-foreground/60">
-          {isLoading ? "..." : `${total} tugas selesai${data?.hasMore ? " (menampilkan 200 terbaru)" : ""}`}
+          {isLoading ? "..." : `${total} agenda selesai${data?.hasMore ? " (menampilkan 200 terbaru)" : ""}`}
         </p>
       </div>
 
       {isError ? (
-        <p className="py-8 text-center text-sm text-muted-foreground/60">Gagal memuat tugas</p>
+        <p className="py-8 text-center text-sm text-muted-foreground/60">Gagal memuat agenda</p>
       ) : isLoading ? (
         <div className="space-y-1">
           {[1, 2, 3].map((i) => (
@@ -54,7 +54,7 @@ export default function SelesaiPage() {
           ))}
           {todos?.length === 0 && (
             <p className="py-8 text-center text-sm text-muted-foreground/60">
-              Belum ada tugas yang selesai
+              Belum ada agenda yang selesai
             </p>
           )}
         </div>

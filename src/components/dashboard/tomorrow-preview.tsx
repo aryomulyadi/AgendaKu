@@ -33,16 +33,16 @@ export function TomorrowPreview() {
   function handleCreate(title: string) {
     createMutation.mutate(
       { title, priority: "MEDIUM", deadline: getTomorrowISO(), categoryId: selectedCategoryId },
-      { onError: () => toast.error("Gagal menambahkan tugas"), onSuccess: () => setSelectedCategoryId(null) },
+      { onError: () => toast.error("Gagal menambahkan agenda"), onSuccess: () => setSelectedCategoryId(null) },
     );
   }
 
   function handleToggle(id: string) {
-    toggleMutation.mutate(id, { onError: () => toast.error("Gagal mengubah tugas") });
+    toggleMutation.mutate(id, { onError: () => toast.error("Gagal mengubah agenda") });
   }
 
   function handleDelete(id: string) {
-    deleteMutation.mutate(id, { onError: () => toast.error("Gagal menghapus tugas") });
+    deleteMutation.mutate(id, { onError: () => toast.error("Gagal menghapus agenda") });
   }
 
   function handleUpdate(id: string, data: { title?: string; priority?: number; deadline?: string | null }) {
@@ -54,7 +54,7 @@ export function TomorrowPreview() {
     if (data.deadline !== undefined) payload.deadline = data.deadline;
     updateMutation.mutate(
       { id, data: payload },
-      { onError: () => toast.error("Gagal memperbarui tugas") },
+      { onError: () => toast.error("Gagal memperbarui agenda") },
     );
   }
 
@@ -65,12 +65,12 @@ export function TomorrowPreview() {
           Besok
         </h3>
         <p className="mt-0.5 text-[11px] text-muted-foreground/40">
-          {isLoading ? "..." : `${tasks?.length ?? 0} tugas`}
+          {isLoading ? "..." : `${tasks?.length ?? 0} agenda`}
         </p>
       </div>
 
       {isError ? (
-        <p className="py-3 text-center text-xs text-muted-foreground/40">Gagal memuat tugas</p>
+        <p className="py-3 text-center text-xs text-muted-foreground/40">Gagal memuat agenda</p>
       ) : isLoading ? (
         <div className="space-y-1">
           {[1, 2].map((i) => (
@@ -125,7 +125,7 @@ export function TomorrowPreview() {
           ))}
           {tasks?.length === 0 && (
             <p className="py-3 text-center text-xs text-muted-foreground/40">
-              Belum ada tugas untuk besok
+              Belum ada agenda untuk besok
             </p>
           )}
         </div>

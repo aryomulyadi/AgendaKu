@@ -51,13 +51,13 @@ export function TodayTaskList({ selectedDate }: TodayTaskListProps) {
       { title, priority: "MEDIUM", deadline: selectedDate, categoryId: selectedCategoryId },
       {
         onSuccess: () => setSelectedCategoryId(null),
-        onError: () => toast.error("Gagal menambahkan tugas"),
+        onError: () => toast.error("Gagal menambahkan agenda"),
       },
     );
   }
 
   function handleToggle(id: string) {
-    toggleMutation.mutate(id, { onError: () => toast.error("Gagal mengubah tugas") });
+    toggleMutation.mutate(id, { onError: () => toast.error("Gagal mengubah agenda") });
   }
 
   function handleUpdate(id: string, data: { title?: string; priority?: number; deadline?: string | null }) {
@@ -69,12 +69,12 @@ export function TodayTaskList({ selectedDate }: TodayTaskListProps) {
     if (data.deadline !== undefined) payload.deadline = data.deadline;
     updateMutation.mutate(
       { id, data: payload },
-      { onError: () => toast.error("Gagal memperbarui tugas") },
+      { onError: () => toast.error("Gagal memperbarui agenda") },
     );
   }
 
   function handleDelete(id: string) {
-    deleteMutation.mutate(id, { onError: () => toast.error("Gagal menghapus tugas") });
+    deleteMutation.mutate(id, { onError: () => toast.error("Gagal menghapus agenda") });
   }
 
   const filtered = (todos ?? []).filter((t) => {
@@ -84,7 +84,7 @@ export function TodayTaskList({ selectedDate }: TodayTaskListProps) {
   });
 
   const activeCount = todos?.filter((t) => !t.done).length ?? 0;
-  const title = selectedDate ? formatDateHeader(selectedDate) : "Tugas Hari Ini";
+  const title = selectedDate ? formatDateHeader(selectedDate) : "Agenda Hari Ini";
 
   return (
     <section>
@@ -112,7 +112,7 @@ export function TodayTaskList({ selectedDate }: TodayTaskListProps) {
       </div>
 
       {isError ? (
-        <p className="py-4 text-center text-sm text-muted-foreground/60">Gagal memuat tugas</p>
+        <p className="py-4 text-center text-sm text-muted-foreground/60">Gagal memuat agenda</p>
       ) : isLoading ? (
         <div className="space-y-1">
           {[1, 2, 3].map((i) => (
@@ -138,12 +138,12 @@ export function TodayTaskList({ selectedDate }: TodayTaskListProps) {
           ))}
           {activeCount === 0 && filter === "all" && (
             <p className="py-4 text-center text-sm text-muted-foreground/60">
-              {selectedDate ? "Tidak ada tugas di tanggal ini" : "Semua tugas selesai! 🎉"}
+              {selectedDate ? "Tidak ada agenda di tanggal ini" : "Semua agenda selesai! 🎉"}
             </p>
           )}
           {filtered?.length === 0 && filter !== "all" && (
             <p className="py-4 text-center text-sm text-muted-foreground/60">
-              Tidak ada tugas {filter === "active" ? "aktif" : "selesai"}
+              Tidak ada agenda {filter === "active" ? "aktif" : "selesai"}
             </p>
           )}
         </div>
@@ -151,7 +151,7 @@ export function TodayTaskList({ selectedDate }: TodayTaskListProps) {
 
       <div className="mt-3">
         <TaskInput
-          placeholder="Tambah tugas..."
+          placeholder="Tambah agenda..."
           onSubmit={handleCreate}
           isPending={createMutation.isPending}
           categories={categories ?? []}

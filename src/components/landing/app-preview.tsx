@@ -1,8 +1,8 @@
 "use client";
 
+import { Tag } from "lucide-react";
 import { TodaySection } from "@/components/landing/today-section";
 import { TomorrowPreview } from "@/components/landing/tomorrow-preview";
-import { TaskInput } from "@/components/task/task-input";
 
 export function AppPreview() {
   return (
@@ -10,7 +10,13 @@ export function AppPreview() {
       <div className="p-5 sm:p-6">
         <TodaySection />
         <div className="mt-4">
-          <TaskInput placeholder="Tambah tugas hari ini" />
+          <div className="flex items-center gap-3 rounded-[10px] border border-border/60 bg-surface px-4 py-3">
+            <div className="size-5 shrink-0 rounded-full border-2 border-muted-foreground/25" />
+            <span className="flex-1 text-sm text-muted-foreground/60">
+              Tambah agenda hari ini
+            </span>
+            <Tag className="size-3.5 text-muted-foreground/40" />
+          </div>
         </div>
         <div className="my-4 border-t border-border/50" />
         <TomorrowPreview />

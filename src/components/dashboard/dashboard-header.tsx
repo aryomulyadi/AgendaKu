@@ -94,7 +94,7 @@ export function DashboardHeader() {
               onKeyDown={(e) => {
                 if (e.key === "Escape") { setOpen(false); inputRef.current?.blur(); }
               }}
-              placeholder="Cari tugas..."
+              placeholder="Cari agenda..."
               className="w-40 bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground/60"
             />
             {query && (

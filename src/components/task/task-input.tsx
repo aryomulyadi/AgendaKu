@@ -15,7 +15,7 @@ interface TaskInputProps {
 }
 
 export function TaskInput({
-  placeholder = "Tambah tugas...",
+  placeholder = "Tambah agenda...",
   onSubmit,
   isPending,
   categories = [],

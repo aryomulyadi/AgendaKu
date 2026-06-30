@@ -177,8 +177,7 @@ export function TaskItem({
         )}
 
         {!done && deadline && (
-          <span className="hidden shrink-0 items-center gap-1 text-[11px] text-muted-foreground/50 sm:flex">
-            <Calendar className="size-3" />
+          <span className="hidden text-[11px] text-muted-foreground/50 sm:inline">
             {formatDate(deadline)}
           </span>
         )}

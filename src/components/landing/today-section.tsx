@@ -3,9 +3,9 @@
 import { TaskItem } from "@/components/task/task-item";
 
 const todayTasks = [
-  { id: "demo-1", title: "Review desain halaman utama", done: false, priority: 2 as const },
-  { id: "demo-2", title: "Meeting tim produk", done: true, priority: 3 as const },
-  { id: "demo-3", title: "Revisi komponen Navbar", done: false, priority: 1 as const },
+  { id: "demo-1", title: "Kursus Bahasa Inggris", done: false, priority: 2 as const, categoryColor: "#10B981", categoryName: "Belajar" },
+  { id: "demo-2", title: "Olahraga pagi", done: true, priority: 3 as const, categoryColor: "#8B5CF6", categoryName: "Kesehatan" },
+  { id: "demo-3", title: "Meeting Kerjaan", done: false, priority: 1 as const, categoryColor: null, categoryName: null },
 ];
 
 export function TodaySection() {
@@ -17,10 +17,10 @@ export function TodaySection() {
     <section>
       <div className="mb-4">
         <h2 className="text-xl font-semibold tracking-tight text-foreground">
-          Selamat pagi.
+          Agenda Hari Ini
         </h2>
         <p className="mt-0.5 text-sm text-muted-foreground">
-          {total} tugas hari ini
+          {total} agenda hari ini
         </p>
       </div>
 
@@ -32,13 +32,15 @@ export function TodaySection() {
             title={task.title}
             done={task.done}
             priority={task.priority}
+            categoryColor={task.categoryColor}
+            categoryName={task.categoryName}
           />
         ))}
       </div>
 
       <div className="mt-3 space-y-1.5">
         <p className="text-xs text-muted-foreground/70">
-          {completed} dari {total} tugas selesai
+          {completed} dari {total} agenda selesai
         </p>
         <div className="h-1 w-full overflow-hidden rounded-full bg-muted">
           <div

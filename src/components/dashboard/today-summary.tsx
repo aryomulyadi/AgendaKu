@@ -33,7 +33,7 @@ export function TodaySummary() {
           {completed}
         </span>
         <span className="text-sm text-muted-foreground">
-          dari {total} tugas selesai
+          dari {total} agenda selesai
         </span>
         {total > 0 && (
           <>
