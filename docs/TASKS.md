@@ -1,6 +1,6 @@
 # Development Progress
 
-## Phase 1
+## Phase 1 — Setup
 
 - [x] Setup Project
 - [x] Install Dependencies
@@ -11,19 +11,22 @@
 
 ---
 
-## Phase 2
+## Phase 2 — Landing Page (First Experience)
 
-- [x] Floating Navbar (rounded, blur, sticky, centered)
-- [x] Hero (left content + right mockup dashboard)
-- [x] Trusted By section
-- [x] Feature Grid (6 cards, hover animation)
-- [x] Dashboard Preview (mockup besar)
-- [x] CTA (gradient background)
-- [x] Footer (simple)
+- [x] Sync dokumentasi final v1
+- [x] Hapus komponen lama (Hero, Trusted By, Feature Grid, Dashboard Preview, CTA gradient)
+- [x] Update font ke Geist
+- [x] Navbar minimal (flat, logo kiri, Masuk kanan)
+- [x] TodaySection (greeting, task count, task items)
+- [x] TomorrowPreview (compact, 2 items, reduced opacity)
+- [x] BrandStatement (filosofi 2 baris)
+- [x] CTA (input field + Mulai Gratis)
+- [x] Footer minimal (nama + tahun)
 - [x] Theme Provider & Dark Mode
 - [x] Theme Toggle
-- [ ] Login
-- [ ] Register
+- [x] Responsive
+- [x] Self-review (Taste Skill)
+- [x] Lint & Build
 
 ---
 

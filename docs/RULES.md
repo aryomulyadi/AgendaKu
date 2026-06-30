@@ -75,3 +75,27 @@ AI wajib:
 3. Menjelaskan alasan perubahan.
 4. Memberikan langkah berikutnya.
 5. Menunggu instruksi selanjutnya.
+
+## Document Priority
+
+Jika terjadi konflik antar dokumen,
+gunakan urutan prioritas berikut.
+
+1. VISION.md
+2. BRAND.md
+3. DESIGN_DIRECTION.md
+4. ANTI_AI_DESIGN.md
+5. PRD.md
+6. DESIGN.md
+7. STACK.md
+8. TASKS.md
+9. RULES.md
+
+Dokumen dengan prioritas lebih rendah harus menyesuaikan dokumen yang lebih tinggi.
+
+Jangan meminta konfirmasi jika konflik hanya berupa dokumentasi.
+
+Sebaliknya,
+perbarui dokumen yang sudah tidak relevan.
+
+Hanya minta konfirmasi jika perubahan akan mengubah fitur utama aplikasi.

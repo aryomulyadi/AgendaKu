@@ -2,7 +2,7 @@
 
 Frontend
 
-Next.js 15
+Next.js 16.2.9
 
 React 19
 
@@ -10,11 +10,11 @@ TypeScript
 
 Tailwind CSS
 
-shadcn/ui
+shadcn/ui (base-nova)
 
 Lucide React
 
-Framer Motion
+Motion (framer-motion v12)
 
 Backend
 
@@ -26,11 +26,11 @@ PostgreSQL
 
 ORM
 
-Prisma
+Prisma 7
 
 Authentication
 
-Auth.js
+Auth.js v5 (Credentials)
 
 Validation
 
@@ -69,3 +69,9 @@ Version Control
 Git
 
 GitHub
+
+Font
+
+Geist (next/font/google)
+
+Note: Next.js 16.2.9 digunakan (backward compatible dengan Next.js 15 API). Tidak ada breaking changes signifikan pada stack ini.

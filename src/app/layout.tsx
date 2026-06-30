@@ -1,18 +1,19 @@
 import type { Metadata } from "next";
-import { Inter, Geist } from "next/font/google";
+import { Geist } from "next/font/google";
 import "./globals.css";
-import { cn } from "@/lib/utils";
+import { ThemeProvider } from "@/components/theme/theme-provider";
+import { Navbar } from "@/components/layout/navbar";
+import { Footer } from "@/components/layout/footer";
 
-const geist = Geist({subsets:['latin'],variable:'--font-sans'});
-
-const inter = Inter({
+const geist = Geist({
   subsets: ["latin"],
-  variable: "--font-inter",
+  variable: "--font-geist",
 });
 
 export const metadata: Metadata = {
-  title: "AgendaKu",
-  description: "Kelola aktivitas harian secara sederhana, cepat, dan nyaman.",
+  title: "AgendaKu - Kelola Aktivitas Harian dengan Mudah",
+  description:
+    "Kelola aktivitas harian secara sederhana, cepat, dan nyaman.",
 };
 
 export default function RootLayout({
@@ -21,9 +22,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="id" className={cn("h-full", "antialiased", inter.variable, "font-sans", geist.variable)} suppressHydrationWarning>
-      <body className="min-h-full flex flex-col bg-background text-text-primary font-sans">
-        {children}
+    <html lang="id" className={geist.variable} suppressHydrationWarning>
+      <body className="min-h-screen flex flex-col bg-background font-sans antialiased">
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <Navbar />
+          <main className="flex-1">{children}</main>
+          <Footer />
+        </ThemeProvider>
       </body>
     </html>
   );
