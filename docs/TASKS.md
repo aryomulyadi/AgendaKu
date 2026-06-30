@@ -1,6 +1,6 @@
-# Development Progress
+﻿# Development Progress
 
-## Phase 1 — Setup
+## Phase 1 â€” Setup
 
 - [x] Setup Project
 - [x] Install Dependencies
@@ -11,7 +11,7 @@
 
 ---
 
-## Phase 2 — Landing Page (First Experience)
+## Phase 2 â€” Landing Page (First Experience)
 
 - [x] Sync dokumentasi final v1
 - [x] Hapus komponen lama (Hero, Trusted By, Feature Grid, Dashboard Preview, CTA gradient)
@@ -30,7 +30,7 @@
 
 ---
 
-## Phase 3 — Dashboard Layout
+## Phase 3 â€” Dashboard Layout
 
 - [x] Dashboard page + route group layout
 - [x] Sidebar (desktop persistent, mobile Sheet)
@@ -47,7 +47,7 @@
 
 ---
 
-## Phase 4 — CRUD Todo
+## Phase 4 â€” CRUD Todo
 
 - [x] Server actions (createTodo, toggleTodo, deleteTodo, getTodayTodos, getTodayStats, getFocusTask, getTomorrowTodos)
 - [x] Zod schemas (createTodoSchema)
@@ -62,12 +62,19 @@
 
 ---
 
-## Phase 5
+## Phase 5 â€” Task Management & Categories
 
-- [ ] Category
-- [ ] Search
-- [ ] Filter
-- [ ] Sorting
+- [x] updateTodo server action + hook (prerequisite for all below)
+- [x] Priority cycle on TaskItem (click accent bar)
+- [x] Inline edit title on TaskItem (double-click)
+- [x] Deadline with date picker on TaskItem
+- [x] Category CRUD (schemas, actions, hooks, page at /dashboard/kategori)
+- [x] Search bar functional (useSearchTodos hook, dropdown results)
+- [x] Filter chips (Semua / Aktif / Selesai) in TodayTaskList (sort dropdown removed â€” data sorted by priority from server)
+- [x] Category selector in TaskInput â€” tag icon dropdown to pick category when adding task
+- [x] Category tooltip on TaskItem â€” hover over color dot shows category name with tooltip
+- [x] ~~Focus task selector~~ (dihapus â€” tidak diperlukan, digantikan kategori)
+- [x] ~~toggleFocusTask~~ (dihapus â€” ikut fokus feature)
 
 ---
 
@@ -93,3 +100,4 @@
 - [ ] Testing
 - [ ] Optimization
 - [ ] Deployment
+

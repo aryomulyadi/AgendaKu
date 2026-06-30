@@ -2,6 +2,8 @@ import { Sidebar } from "@/components/dashboard/sidebar";
 import { DashboardHeader } from "@/components/dashboard/dashboard-header";
 import { QueryProvider } from "@/components/providers/query-provider";
 
+export const dynamic = "force-dynamic";
+
 export default function DashboardLayout({
   children,
 }: Readonly<{
@@ -10,12 +12,14 @@ export default function DashboardLayout({
   return (
     <div className="min-h-screen bg-background">
       <Sidebar />
-      <div className="flex min-h-screen flex-col lg:pl-56">
-        <DashboardHeader />
-        <main className="flex-1 p-4 sm:p-6">
-          <QueryProvider>{children}</QueryProvider>
-        </main>
-      </div>
+      <QueryProvider>
+        <div className="flex min-h-screen flex-col lg:pl-56">
+          <DashboardHeader />
+          <main className="flex-1 p-4 sm:p-6">
+            {children}
+          </main>
+        </div>
+      </QueryProvider>
     </div>
   );
 }
