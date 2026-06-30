@@ -5,7 +5,7 @@ import { Search, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ThemeToggle } from "@/components/theme/theme-toggle";
 import { useSearchTodos } from "@/hooks/use-todos";
-import { getProfile } from "@/lib/actions/settings";
+import { useProfile } from "@/hooks/use-profile";
 
 const dayNames = [
   "Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu",
@@ -32,16 +32,12 @@ function getFormattedDate(): string {
 export function DashboardHeader() {
   const greeting = getGreeting();
   const dateStr = getFormattedDate();
-  const [userName, setUserName] = useState("");
+  const { data: profile } = useProfile();
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
   const { data: results, isFetching } = useSearchTodos(searchQuery);
-
-  useEffect(() => {
-    getProfile().then((u) => { if (u?.name) setUserName(u.name); }).catch(() => {});
-  }, []);
 
   useEffect(() => {
     const timer = setTimeout(() => setSearchQuery(query), 300);
@@ -68,7 +64,7 @@ export function DashboardHeader() {
     <header className="flex h-14 items-center justify-between gap-4 border-b border-border bg-background/95 px-4 backdrop-blur-sm sm:px-6">
       <div className="flex items-center gap-3">
         <h1 className="text-base font-semibold tracking-tight text-foreground">
-          {greeting}{userName ? `, ${userName}` : ""}
+          {greeting}{profile?.name ? `, ${profile.name}` : ""}
         </h1>
         <span className="hidden text-sm text-muted-foreground sm:block">
           {dateStr}

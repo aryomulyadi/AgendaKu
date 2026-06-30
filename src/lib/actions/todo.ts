@@ -137,22 +137,25 @@ export async function getTomorrowTodos() {
   if (!session?.user?.id) return [];
 
   const { start, end } = getTomorrowRange();
-
-  const deadlineTasks = await prisma.todo.findMany({
-    where: { userId: session.user.id, deadline: { gte: start, lte: end } },
-    orderBy: { priority: "desc" },
-    take: 3,
-  });
-
   const { start: todayStart } = getTodayRange();
-  const carryOver = await prisma.todo.findMany({
-    where: { userId: session.user.id, completed: false, deadline: null, createdAt: { gte: todayStart } },
+
+  const todos = await prisma.todo.findMany({
+    where: {
+      userId: session.user.id,
+      OR: [
+        { deadline: { gte: start, lte: end } },
+        { completed: false, deadline: null, createdAt: { gte: todayStart } },
+      ],
+    },
     orderBy: { priority: "desc" },
-    take: 2,
+    take: 5,
   });
 
-  const mapped = deadlineTasks.map((t) => ({ id: t.id, title: t.title, done: t.completed, carryOver: false as const }));
-  const mappedCarry = carryOver.map((t) => ({ id: t.id, title: t.title, done: t.completed, carryOver: true as const }));
+  const deadlineTasks = todos.filter((t) => t.deadline && t.deadline >= start && t.deadline <= end);
+  const carryOver = todos.filter((t) => !t.deadline && !t.completed);
+
+  const mapped = deadlineTasks.slice(0, 3).map((t) => ({ id: t.id, title: t.title, done: t.completed, carryOver: false as const }));
+  const mappedCarry = carryOver.slice(0, 2).map((t) => ({ id: t.id, title: t.title, done: t.completed, carryOver: true as const }));
 
   return [...mapped, ...mappedCarry].slice(0, 5);
 }

@@ -182,7 +182,7 @@ export function TaskItem({
           </span>
         )}
 
-        {!done && (
+        {!done && onUpdate && (
           <label className="shrink-0 opacity-0 transition-all duration-150 group-hover:opacity-100 hover:text-destructive cursor-pointer">
             <Calendar className="size-3.5 text-muted-foreground/40 hover:text-primary" />
             <input

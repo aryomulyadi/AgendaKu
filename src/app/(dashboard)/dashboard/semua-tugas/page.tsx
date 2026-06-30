@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { toast } from "sonner";
 import { cn, numToPriority } from "@/lib/utils";
 import { Search } from "lucide-react";
@@ -18,19 +18,11 @@ const dayNames = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"
 const monthNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
 
 function toDateKey(iso: string) {
-  return iso.slice(0, 10);
+  const d = new Date(iso);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 }
 
-function formatGroupHeader(dateKey: string) {
-  const today = new Date();
-  const todayKey = toDateKey(today.toISOString());
-  const tomorrow = new Date(today);
-  tomorrow.setDate(tomorrow.getDate() + 1);
-  const tomorrowKey = toDateKey(tomorrow.toISOString());
-  const yesterday = new Date(today);
-  yesterday.setDate(yesterday.getDate() - 1);
-  const yesterdayKey = toDateKey(yesterday.toISOString());
-
+function formatGroupHeader(dateKey: string, todayKey: string, tomorrowKey: string, yesterdayKey: string) {
   if (dateKey === todayKey) return "Hari Ini";
   if (dateKey === tomorrowKey) return "Besok";
   if (dateKey === yesterdayKey) return "Kemarin";
@@ -47,6 +39,20 @@ export default function SemuaTugasPage() {
   const deleteMutation = useDeleteTodo();
   const [searchQuery, setSearchQuery] = useState("");
   const [filter, setFilter] = useState<Filter>("all");
+  const [now, setNow] = useState(() => new Date());
+
+  useEffect(() => {
+    const timer = setInterval(() => setNow(new Date()), 60_000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const todayKey = toDateKey(now.toISOString());
+  const tomorrowDate = new Date(now);
+  tomorrowDate.setDate(tomorrowDate.getDate() + 1);
+  const tomorrowKey = toDateKey(tomorrowDate.toISOString());
+  const yesterdayDate = new Date(now);
+  yesterdayDate.setDate(yesterdayDate.getDate() - 1);
+  const yesterdayKey = toDateKey(yesterdayDate.toISOString());
 
   function handleToggle(id: string) {
     toggleMutation.mutate(id, { onError: () => toast.error("Gagal mengubah agenda") });
@@ -146,7 +152,7 @@ export default function SemuaTugasPage() {
             <div key={dateKey}>
               <div className="mb-2 flex items-center gap-2">
                 <h2 className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground/50">
-                  {formatGroupHeader(dateKey)}
+                  {formatGroupHeader(dateKey, todayKey, tomorrowKey, yesterdayKey)}
                 </h2>
                 <div className="flex-1 border-t border-border/40" />
               </div>

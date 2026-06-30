@@ -147,7 +147,18 @@
 - [x] TaskItem: hapus Calendar icon dekoratif (duplicate, tidak interaktif)
 - [x] AppPreview: ganti TaskInput → mock visual-only (tidak bisa diketik)
 
-## Phase 8 — Rilis
+## Phase 8 — Performance Polish
+
+- [x] QueryProvider: `staleTime` 30s → 5min, tambah `refetchOnWindowFocus: false`
+- [x] Hook baru `use-profile.ts` — React Query wrapper untuk `getProfile()` dengan staleTime 5min
+- [x] DashboardHeader: ganti raw `useEffect` + `getProfile()` → `useProfile()`
+- [x] `getTomorrowTodos()`: merge 2 sequential Prisma queries → 1 query dengan `OR`
+- [x] `loading.tsx` dashboard: skeleton layout (sidebar + header + spinner)
+- [x] Semua Tugas: date header real-time via `now` state + interval 60s
+- [x] Semua Tugas: `toDateKey` pakai local timezone (`.getFullYear/getMonth/getDate`) bukan UTC `slice(0,10)`
+- [x] TaskItem: date picker icon hanya render jika `onUpdate` ada
+
+## Phase 9 — Rilis
 
 - [ ] Setup PostgreSQL
 - [ ] Testing
