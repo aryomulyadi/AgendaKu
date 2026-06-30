@@ -1,7 +1,7 @@
 "use client";
 
 import { toast } from "sonner";
-import { cn } from "@/lib/utils";
+import { cn, numToPriority } from "@/lib/utils";
 import { TaskItem } from "@/components/task/task-item";
 import { TaskInput } from "@/components/task/task-input";
 import {
@@ -20,7 +20,7 @@ function getTomorrowISO() {
 }
 
 export function TomorrowPreview() {
-  const { data: tasks, isLoading } = useTomorrowTodos();
+  const { data: tasks, isLoading, isError } = useTomorrowTodos();
   const { data: categories } = useCategories();
   const createMutation = useCreateTodo();
   const toggleMutation = useToggleTodo();
@@ -46,7 +46,7 @@ export function TomorrowPreview() {
     const payload: { title?: string; priority?: "LOW" | "MEDIUM" | "HIGH"; deadline?: string | null } = {};
     if (data.title !== undefined) payload.title = data.title;
     if (data.priority !== undefined) {
-      payload.priority = data.priority === 3 ? "HIGH" : data.priority === 2 ? "MEDIUM" : "LOW";
+      payload.priority = numToPriority(data.priority);
     }
     if (data.deadline !== undefined) payload.deadline = data.deadline;
     updateMutation.mutate(
@@ -66,7 +66,9 @@ export function TomorrowPreview() {
         </p>
       </div>
 
-      {isLoading ? (
+      {isError ? (
+        <p className="py-3 text-center text-xs text-muted-foreground/40">Gagal memuat tugas</p>
+      ) : isLoading ? (
         <div className="space-y-1">
           {[1, 2].map((i) => (
             <div key={i} className="h-[34px] rounded-[10px] bg-muted/30 animate-pulse" />

@@ -18,7 +18,7 @@ const presetColors = [
 ];
 
 export default function CategoriesPage() {
-  const { data: categories, isLoading } = useCategories();
+  const { data: categories, isLoading, isError } = useCategories();
   const createMutation = useCreateCategory();
   const updateMutation = useUpdateCategory();
   const deleteMutation = useDeleteCategory();
@@ -27,6 +27,7 @@ export default function CategoriesPage() {
   const [newColor, setNewColor] = useState("#2563EB");
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editName, setEditName] = useState("");
+  const [deleteConfirm, setDeleteConfirm] = useState<{ id: string; name: string } | null>(null);
 
   function handleCreate() {
     const trimmed = newName.trim();
@@ -65,6 +66,7 @@ export default function CategoriesPage() {
   }
 
   function handleDelete(id: string) {
+    setDeleteConfirm(null);
     deleteMutation.mutate(id, {
       onSuccess: () => toast.success("Kategori dihapus"),
       onError: () => toast.error("Gagal menghapus kategori"),
@@ -118,7 +120,9 @@ export default function CategoriesPage() {
       </div>
 
       <div className="space-y-1.5">
-        {isLoading ? (
+        {isError ? (
+          <p className="py-8 text-center text-sm text-muted-foreground/60">Gagal memuat kategori</p>
+        ) : isLoading ? (
           [1, 2, 3].map((i) => (
             <div key={i} className="h-[52px] rounded-[10px] bg-muted/50 animate-pulse" />
           ))
@@ -179,7 +183,7 @@ export default function CategoriesPage() {
                   <button type="button" onClick={() => handleStartEdit(cat)} className="text-muted-foreground/50 hover:text-foreground transition-colors">
                     <Pencil className="size-3.5" />
                   </button>
-                  <button type="button" onClick={() => handleDelete(cat.id)} className="text-muted-foreground/50 hover:text-destructive transition-colors">
+                  <button type="button" onClick={() => setDeleteConfirm({ id: cat.id, name: cat.name })} className="text-muted-foreground/50 hover:text-destructive transition-colors">
                     <Trash2 className="size-3.5" />
                   </button>
                 </>
@@ -188,6 +192,35 @@ export default function CategoriesPage() {
           ))
         )}
       </div>
+
+      {deleteConfirm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/20 backdrop-blur-sm">
+          <div className="w-80 rounded-[14px] border border-border bg-card p-5 shadow-lg">
+            <h3 className="text-sm font-semibold text-foreground">Hapus Kategori</h3>
+            <p className="mt-2 text-sm text-muted-foreground/70">
+              Yakin ingin menghapus <span className="font-medium text-foreground">{deleteConfirm.name}</span>?
+              Tugas dalam kategori ini tidak akan terhapus, hanya kategorinya yang dihapus.
+            </p>
+            <div className="mt-4 flex items-center justify-end gap-2">
+              <button
+                type="button"
+                onClick={() => setDeleteConfirm(null)}
+                className="rounded-[8px] border border-border/60 px-3 py-1.5 text-xs font-medium text-foreground transition-all hover:bg-muted/50"
+              >
+                Batal
+              </button>
+              <button
+                type="button"
+                onClick={() => handleDelete(deleteConfirm.id)}
+                disabled={deleteMutation.isPending}
+                className="rounded-[8px] bg-destructive px-3 py-1.5 text-xs font-medium text-destructive-foreground transition-all hover:bg-destructive/90 disabled:opacity-50"
+              >
+                {deleteMutation.isPending ? "Menghapus..." : "Hapus"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

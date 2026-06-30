@@ -3,7 +3,15 @@
 import { useTodayStats } from "@/hooks/use-todos";
 
 export function TodaySummary() {
-  const { data: stats, isLoading } = useTodayStats();
+  const { data: stats, isLoading, isError } = useTodayStats();
+
+  if (isError) {
+    return (
+      <section className="space-y-2">
+        <p className="text-sm text-muted-foreground/60">Gagal memuat ringkasan</p>
+      </section>
+    );
+  }
 
   if (isLoading || !stats) {
     return (

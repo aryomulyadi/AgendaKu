@@ -97,16 +97,44 @@
 
 ---
 
-## Phase 7
+## Phase 7a — 5 Halaman Sidebar
 
-- [ ] Responsive
-- [ ] Loading
-- [ ] Empty State (partial — already handled per section)
-- [ ] Error Handling
+- [x] `/dashboard/hari-ini` — reuse TodaySummary + TodayTaskList dengan selectedDate=today
+- [x] `/dashboard/besok` — pure tomorrow tasks (tanpa carry-over), full CRUD (TaskInput + TaskItem)
+- [x] `/dashboard/semua-tugas` — semua tasks user, search bar + filter chips (Semua/Aktif/Selesai)
+- [x] Server action: getAllTodos — query semua tasks user
+- [x] Hook: useAllTodos
+- [x] `/dashboard/selesai` — completed tasks archive (50 terbaru), toggle uncheck + delete
+- [x] Server action: getCompletedTodos — query completed tasks
+- [x] Hook: useCompletedTodos
+- [x] `/dashboard/kalender` — full month grid 7 kolom (Senin-Minggu), prev/next nav, Hari ini button
+- [x] Detail panel bawah — klik tanggal tampilkan tasks di tanggal itu via useDateTodos
+- [x] Task dots per hari (3 dot max + "+N" overflow)
 
-## Phase 8
+## Phase 7b — Polish
 
+- [x] ErrorBoundary component (`src/components/ui/error-boundary.tsx`)
+- [x] Dashboard error page (`src/app/(dashboard)/error.tsx`)
+- [x] Error boundaries wrapping TodaySummary, TodayTaskList, TomorrowPreview, MiniCalendar di Dashboard
+- [x] Query error UI (`isError` fallback) — semua pages & sections: hari-ini, besok, semua-tugas, selesai, kalender, kategori, today-summary, today-task-list, tomorrow-preview
+- [x] TodaySummary: infinite skeleton fix (added `isError` check)
+- [x] TodayTaskList: tasks created with selectedDate now inherit the date as deadline
+- [x] MiniCalendar: cells memoized (`useMemo`), loading skeleton during fetch
+- [x] Kalender grid: loading skeleton selama `useCalendarTasks` fetch
+- [x] Shared utility: `numToPriority(n)` — replaces 6 inline priority mappings
+- [x] Shared utility: `getTodayISO()`, `getTomorrowISO()` — reusable + memoized via `useMemo`
+- [x] Pengaturan: fixed shared `showCurr` state (split into `showProfilePw` + `showCurr`)
+- [x] Dashboard header: removed non-functional `+` button (no-op), cleaned unused imports
+- [x] Sidebar: close Sheet otomatis setelah klik link navigasi (controlled `open` state)
+- [x] Delete confirmation kategori (modal overlay + Batal/Hapus)
+- [x] Username di greeting navbar (`getProfile` → "Selamat malam, Rifqi")
+- [x] Search debounce 300ms di DashboardHeader (`searchQuery` state via `useEffect` + `setTimeout`)
+- [x] Targeted query invalidation — tiap mutation invalidate subset query spesifik, bukan semua `["todos"]`
+- [x] `getCompletedTodos` — limit dinaikkan 50→200 + return `{ todos, total, hasMore }`
+
+## Phase 8 — Rilis
+
+- [ ] Setup PostgreSQL
 - [ ] Testing
-- [ ] Optimization
-- [ ] Deployment
+- [ ] Deploy
 

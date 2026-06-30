@@ -3,58 +3,24 @@
 import { useState } from "react";
 import { toast } from "sonner";
 import { cn, numToPriority } from "@/lib/utils";
+import { Search } from "lucide-react";
 import { TaskItem } from "@/components/task/task-item";
-import { TaskInput } from "@/components/task/task-input";
 import {
-  useTodayTodos,
-  useDateTodos,
-  useCreateTodo,
+  useAllTodos,
   useToggleTodo,
   useUpdateTodo,
   useDeleteTodo,
 } from "@/hooks/use-todos";
-import { useCategories } from "@/hooks/use-categories";
 
 type Filter = "all" | "active" | "done";
 
-const dayNames = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
-const monthNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
-
-function formatDateHeader(dateStr: string) {
-  const [y, m, d] = dateStr.split("-").map(Number);
-  const date = new Date(y, m - 1, d);
-  return `${dayNames[date.getDay()]}, ${d} ${monthNames[date.getMonth()]} ${y}`;
-}
-
-interface TodayTaskListProps {
-  selectedDate?: string | null;
-}
-
-export function TodayTaskList({ selectedDate }: TodayTaskListProps) {
-  const todayQuery = useTodayTodos();
-  const dateQuery = useDateTodos(selectedDate ?? null);
-  const { data: categories } = useCategories();
-  const createMutation = useCreateTodo();
+export default function SemuaTugasPage() {
+  const { data: todos, isLoading, isError } = useAllTodos();
   const toggleMutation = useToggleTodo();
   const updateMutation = useUpdateTodo();
   const deleteMutation = useDeleteTodo();
-
-  const isLoading = selectedDate ? dateQuery.isLoading : todayQuery.isLoading;
-  const isError = selectedDate ? dateQuery.isError : todayQuery.isError;
-  const todos = selectedDate ? dateQuery.data : todayQuery.data;
-
+  const [searchQuery, setSearchQuery] = useState("");
   const [filter, setFilter] = useState<Filter>("all");
-  const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
-
-  function handleCreate(title: string) {
-    createMutation.mutate(
-      { title, priority: "MEDIUM", deadline: selectedDate, categoryId: selectedCategoryId },
-      {
-        onSuccess: () => setSelectedCategoryId(null),
-        onError: () => toast.error("Gagal menambahkan tugas"),
-      },
-    );
-  }
 
   function handleToggle(id: string) {
     toggleMutation.mutate(id, { onError: () => toast.error("Gagal mengubah tugas") });
@@ -81,17 +47,35 @@ export function TodayTaskList({ selectedDate }: TodayTaskListProps) {
     if (filter === "active") return !t.done;
     if (filter === "done") return t.done;
     return true;
+  }).filter((t) => {
+    if (!searchQuery.trim()) return true;
+    return t.title.toLowerCase().includes(searchQuery.toLowerCase());
   });
 
+  const totalCount = todos?.length ?? 0;
   const activeCount = todos?.filter((t) => !t.done).length ?? 0;
-  const title = selectedDate ? formatDateHeader(selectedDate) : "Tugas Hari Ini";
+  const doneCount = todos?.filter((t) => t.done).length ?? 0;
 
   return (
-    <section>
-      <div className="mb-3 flex items-center justify-between">
-        <h2 className="text-base font-semibold tracking-tight text-foreground">
-          {title}
-        </h2>
+    <div className="mx-auto max-w-4xl space-y-6">
+      <div>
+        <h1 className="text-lg font-semibold tracking-tight text-foreground">Semua Tugas</h1>
+        <p className="mt-0.5 text-sm text-muted-foreground/60">
+          {isLoading ? "..." : `${totalCount} tugas — ${activeCount} aktif, ${doneCount} selesai`}
+        </p>
+      </div>
+
+      <div className="flex items-center gap-3">
+        <div className="flex flex-1 items-center gap-2 rounded-[10px] border border-border/60 bg-surface px-3.5 py-2.5 transition-all duration-150 focus-within:border-primary/50 focus-within:ring-2 focus-within:ring-primary/20">
+          <Search className="size-4 shrink-0 text-muted-foreground/40" />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Cari tugas..."
+            className="flex-1 bg-transparent text-sm text-foreground placeholder:text-muted-foreground/50 focus:outline-none"
+          />
+        </div>
         <div className="flex items-center gap-1">
           {(["all", "active", "done"] as const).map((f) => (
             <button
@@ -99,7 +83,7 @@ export function TodayTaskList({ selectedDate }: TodayTaskListProps) {
               type="button"
               onClick={() => setFilter(f)}
               className={cn(
-                "rounded-[8px] px-2.5 py-1 text-xs font-medium transition-all duration-150",
+                "rounded-[8px] px-2.5 py-1.5 text-xs font-medium transition-all duration-150",
                 filter === f
                   ? "bg-primary/10 text-primary"
                   : "text-muted-foreground/60 hover:text-foreground hover:bg-muted/50",
@@ -112,16 +96,16 @@ export function TodayTaskList({ selectedDate }: TodayTaskListProps) {
       </div>
 
       {isError ? (
-        <p className="py-4 text-center text-sm text-muted-foreground/60">Gagal memuat tugas</p>
+        <p className="py-8 text-center text-sm text-muted-foreground/60">Gagal memuat tugas</p>
       ) : isLoading ? (
         <div className="space-y-1">
-          {[1, 2, 3].map((i) => (
+          {[1, 2, 3, 4, 5].map((i) => (
             <div key={i} className="h-[42px] rounded-[10px] bg-muted/50 animate-pulse" />
           ))}
         </div>
       ) : (
         <div className="space-y-1">
-          {filtered?.map((task) => (
+          {filtered.map((task) => (
             <TaskItem
               key={task.id}
               id={task.id}
@@ -136,29 +120,17 @@ export function TodayTaskList({ selectedDate }: TodayTaskListProps) {
               onDelete={handleDelete}
             />
           ))}
-          {activeCount === 0 && filter === "all" && (
-            <p className="py-4 text-center text-sm text-muted-foreground/60">
-              {selectedDate ? "Tidak ada tugas di tanggal ini" : "Semua tugas selesai! 🎉"}
-            </p>
-          )}
-          {filtered?.length === 0 && filter !== "all" && (
-            <p className="py-4 text-center text-sm text-muted-foreground/60">
-              Tidak ada tugas {filter === "active" ? "aktif" : "selesai"}
+          {filtered.length === 0 && (
+            <p className="py-8 text-center text-sm text-muted-foreground/60">
+              {searchQuery
+                ? "Tidak ada tugas yang cocok"
+                : filter === "all"
+                  ? "Belum ada tugas"
+                  : `Tidak ada tugas ${filter === "active" ? "aktif" : "selesai"}`}
             </p>
           )}
         </div>
       )}
-
-      <div className="mt-3">
-        <TaskInput
-          placeholder="Tambah tugas..."
-          onSubmit={handleCreate}
-          isPending={createMutation.isPending}
-          categories={categories ?? []}
-          selectedCategoryId={selectedCategoryId}
-          onCategoryChange={setSelectedCategoryId}
-        />
-      </div>
-    </section>
+    </div>
   );
 }

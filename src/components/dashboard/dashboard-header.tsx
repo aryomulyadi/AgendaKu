@@ -1,11 +1,11 @@
 "use client";
 
-import { useState, useRef } from "react";
-import { Search, Plus, X } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
+import { Search, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ThemeToggle } from "@/components/theme/theme-toggle";
-import { Button } from "@/components/ui/button";
 import { useSearchTodos } from "@/hooks/use-todos";
+import { getProfile } from "@/lib/actions/settings";
 
 const dayNames = [
   "Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu",
@@ -32,10 +32,21 @@ function getFormattedDate(): string {
 export function DashboardHeader() {
   const greeting = getGreeting();
   const dateStr = getFormattedDate();
+  const [userName, setUserName] = useState("");
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
-  const { data: results, isFetching } = useSearchTodos(query);
+  const { data: results, isFetching } = useSearchTodos(searchQuery);
+
+  useEffect(() => {
+    getProfile().then((u) => { if (u?.name) setUserName(u.name); }).catch(() => {});
+  }, []);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setSearchQuery(query), 300);
+    return () => clearTimeout(timer);
+  }, [query]);
 
   function handleFocus() {
     if (query.length >= 2) setOpen(true);
@@ -57,7 +68,7 @@ export function DashboardHeader() {
     <header className="flex h-14 items-center justify-between gap-4 border-b border-border bg-background/95 px-4 backdrop-blur-sm sm:px-6">
       <div className="flex items-center gap-3">
         <h1 className="text-base font-semibold tracking-tight text-foreground">
-          {greeting}
+          {greeting}{userName ? `, ${userName}` : ""}
         </h1>
         <span className="hidden text-sm text-muted-foreground sm:block">
           {dateStr}
@@ -130,13 +141,6 @@ export function DashboardHeader() {
             </div>
           )}
         </div>
-        <Button
-          variant="default"
-          size="icon"
-          className="rounded-[10px]"
-        >
-          <Plus className="size-4" />
-        </Button>
         <ThemeToggle />
       </div>
     </header>

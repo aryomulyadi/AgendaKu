@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
+import { useCallback, useState } from "react";
 
 const navItems = [
   { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
@@ -30,13 +31,18 @@ const navItems = [
 
 export function Sidebar() {
   const pathname = usePathname();
+  const [sheetOpen, setSheetOpen] = useState(false);
 
   const isActive = (href: string) => {
     if (href === "/dashboard") return pathname === href;
     return pathname.startsWith(href);
   };
 
-  const navContent = (
+  const handleNavClick = useCallback(() => {
+    setSheetOpen(false);
+  }, []);
+
+  const navContent = (closeOnClick?: boolean) => (
     <nav className="flex-1 space-y-0.5 overflow-y-auto p-3">
       {navItems.map((item) => {
         const active = isActive(item.href);
@@ -44,6 +50,7 @@ export function Sidebar() {
           <Link
             key={item.href}
             href={item.href}
+            onClick={closeOnClick ? handleNavClick : undefined}
             className={cn(
               "flex items-center gap-3 rounded-[10px] px-3 py-2 text-sm font-medium transition-all duration-150",
               active
@@ -70,11 +77,11 @@ export function Sidebar() {
             AgendaKu
           </span>
         </div>
-        {navContent}
+        {navContent()}
       </aside>
 
       <span className="lg:hidden">
-        <Sheet>
+        <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
           <SheetTrigger render={<Button variant="ghost" size="icon" />}>
             <Menu className="size-5" />
           </SheetTrigger>
@@ -87,7 +94,7 @@ export function Sidebar() {
                 AgendaKu
               </span>
             </div>
-            {navContent}
+            {navContent(true)}
           </SheetContent>
         </Sheet>
       </span>

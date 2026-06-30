@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useCalendarTasks } from "@/hooks/use-todos";
@@ -22,11 +22,11 @@ export function MiniCalendar({ selectedDate, onDateSelect }: MiniCalendarProps) 
   const [currentMonth, setCurrentMonth] = useState(today.getMonth());
   const [currentYear, setCurrentYear] = useState(today.getFullYear());
 
-  const { data: taskDates } = useCalendarTasks(currentYear, currentMonth);
-
   const firstDay = new Date(currentYear, currentMonth, 1).getDay();
   const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
   const daysInPrev = new Date(currentYear, currentMonth, 0).getDate();
+
+  const { data: taskDates, isLoading: calLoading } = useCalendarTasks(currentYear, currentMonth);
 
   function prevMonth() {
     if (currentMonth === 0) { setCurrentMonth(11); setCurrentYear((y) => y - 1); }
@@ -38,12 +38,14 @@ export function MiniCalendar({ selectedDate, onDateSelect }: MiniCalendarProps) 
     else { setCurrentMonth((m) => m + 1); }
   }
 
-  const cells: (number | null)[] = [];
-  for (let i = firstDay - 1; i >= 0; i--) { cells.push(daysInPrev - i); }
-  for (let i = 1; i <= daysInMonth; i++) { cells.push(i); }
-
-  const remaining = 42 - cells.length;
-  for (let i = 0; i < remaining; i++) { cells.push(null); }
+  const cells = useMemo(() => {
+    const result: (number | null)[] = [];
+    for (let i = firstDay - 1; i >= 0; i--) { result.push(daysInPrev - i); }
+    for (let i = 1; i <= daysInMonth; i++) { result.push(i); }
+    const remaining = 42 - result.length;
+    for (let i = 0; i < remaining; i++) { result.push(null); }
+    return result;
+  }, [firstDay, daysInMonth, daysInPrev]);
 
   function isToday(day: number) {
     return day === today.getDate() && currentMonth === today.getMonth() && currentYear === today.getFullYear();
@@ -86,6 +88,13 @@ export function MiniCalendar({ selectedDate, onDateSelect }: MiniCalendarProps) 
         </button>
       </div>
 
+      {calLoading ? (
+        <div className="space-y-1">
+          {[1, 2, 3, 4, 5].map((i) => (
+            <div key={i} className="h-8 rounded-md bg-muted/30 animate-pulse" />
+          ))}
+        </div>
+      ) : (
       <div className="grid grid-cols-7 gap-px text-center">
         {dayNames.map((d) => (
           <div key={d} className="py-1 text-[10px] font-medium text-muted-foreground/50">{d}</div>
@@ -112,6 +121,7 @@ export function MiniCalendar({ selectedDate, onDateSelect }: MiniCalendarProps) 
           </div>
         ))}
       </div>
+      )}
     </div>
   );
 }

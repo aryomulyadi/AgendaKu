@@ -17,6 +17,7 @@ export default function SettingsPage() {
   const [newPw, setNewPw] = useState("");
   const [confirmPw, setConfirmPw] = useState("");
   const [pwPending, setPwPending] = useState(false);
+  const [showProfilePw, setShowProfilePw] = useState(false);
   const [showCurr, setShowCurr] = useState(false);
   const [showNew, setShowNew] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
@@ -147,14 +148,14 @@ export default function SettingsPage() {
               <label className="text-xs font-medium text-muted-foreground">Password Saat Ini</label>
               <div className="relative">
                 <input
-                  type={showCurr ? "text" : "password"}
+                  type={showProfilePw ? "text" : "password"}
                   value={profilePassword}
                   onChange={(e) => setProfilePassword(e.target.value)}
                   placeholder="Masukkan password"
                   className="w-full rounded-[10px] border border-border/60 bg-surface px-3.5 py-2 pr-9 text-sm text-foreground outline-none transition-all duration-150 focus:border-primary/40 focus:ring-2 focus:ring-primary/20"
                 />
-                <button type="button" onClick={() => setShowCurr((s) => !s)} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground/50 hover:text-foreground">
-                  {showCurr ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+                <button type="button" onClick={() => setShowProfilePw((s) => !s)} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground/50 hover:text-foreground">
+                  {showProfilePw ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
                 </button>
               </div>
               <p className="text-[11px] text-muted-foreground/50">Diperlukan untuk mengubah email</p>

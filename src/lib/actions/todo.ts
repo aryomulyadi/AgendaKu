@@ -254,6 +254,38 @@ export async function getDateTodos(dateStr: string) {
   return todos.map(mapTodo);
 }
 
+export async function getAllTodos() {
+  const session = await auth();
+  if (!session?.user?.id) return [];
+
+  const todos = await prisma.todo.findMany({
+    where: { userId: session.user.id },
+    include: { category: { select: { id: true, name: true, color: true } } },
+    orderBy: [{ completed: "asc" }, { priority: "desc" }, { createdAt: "desc" }],
+  });
+
+  return todos.map(mapTodo);
+}
+
+export async function getCompletedTodos() {
+  const session = await auth();
+  if (!session?.user?.id) return { todos: [], total: 0, hasMore: false };
+
+  const [todos, total] = await Promise.all([
+    prisma.todo.findMany({
+      where: { userId: session.user.id, completed: true },
+      include: { category: { select: { id: true, name: true, color: true } } },
+      orderBy: { updatedAt: "desc" },
+      take: 200,
+    }),
+    prisma.todo.count({
+      where: { userId: session.user.id, completed: true },
+    }),
+  ]);
+
+  return { todos: todos.map(mapTodo), total, hasMore: total > 200 };
+}
+
 export async function searchTodos(query: string) {
   const session = await auth();
   if (!session?.user?.id) return [];
