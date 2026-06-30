@@ -7,7 +7,7 @@ const tomorrowTasks = [
 
 export function TomorrowPreview() {
   return (
-    <section>
+    <section className="opacity-80">
       <div className="mb-2.5 flex items-center gap-2">
         <span className="text-[11px] font-medium tracking-wide text-muted-foreground/60 uppercase">
           Besok

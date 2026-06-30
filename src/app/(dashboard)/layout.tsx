@@ -1,0 +1,21 @@
+import { Sidebar } from "@/components/dashboard/sidebar";
+import { DashboardHeader } from "@/components/dashboard/dashboard-header";
+import { QueryProvider } from "@/components/providers/query-provider";
+
+export default function DashboardLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <div className="min-h-screen bg-background">
+      <Sidebar />
+      <div className="flex min-h-screen flex-col lg:pl-56">
+        <DashboardHeader />
+        <main className="flex-1 p-4 sm:p-6">
+          <QueryProvider>{children}</QueryProvider>
+        </main>
+      </div>
+    </div>
+  );
+}
