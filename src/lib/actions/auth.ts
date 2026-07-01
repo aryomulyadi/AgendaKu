@@ -35,6 +35,7 @@ export async function registerAction(data: RegisterInput) {
     await signIn("credentials", {
       email,
       password,
+      rememberMe: "true",
       redirect: false,
     });
     return { success: true as const };

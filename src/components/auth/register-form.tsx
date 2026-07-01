@@ -48,6 +48,7 @@ export function RegisterForm() {
       const signInResult = await signIn("credentials", {
         email: data.email,
         password: data.password,
+        rememberMe: "true",
         redirect: false,
       });
 

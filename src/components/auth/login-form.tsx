@@ -13,6 +13,7 @@ import { Loader2 } from "lucide-react";
 export function LoginForm() {
   const router = useRouter();
   const [isPending, setIsPending] = useState(false);
+  const [rememberMe, setRememberMe] = useState(true);
 
   const {
     register,
@@ -30,6 +31,7 @@ export function LoginForm() {
       const result = await signIn("credentials", {
         email: data.email,
         password: data.password,
+        rememberMe: String(rememberMe),
         redirect: false,
       });
 
@@ -91,6 +93,16 @@ export function LoginForm() {
           </p>
         )}
       </div>
+
+      <label className="flex items-center gap-2 cursor-pointer">
+        <input
+          type="checkbox"
+          checked={rememberMe}
+          onChange={(e) => setRememberMe(e.target.checked)}
+          className="size-4 rounded border-border accent-primary"
+        />
+        <span className="text-sm text-muted-foreground">Ingat Saya</span>
+      </label>
 
       <button
         type="submit"

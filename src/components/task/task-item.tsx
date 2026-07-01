@@ -16,10 +16,23 @@ interface TaskItemProps {
   onDelete?: (id: string) => void;
   onUpdate?: (id: string, data: { title?: string; priority?: number; deadline?: string | null }) => void;
   className?: string;
+  timePickerDate?: string | null;
 }
 
 function nextPriority(p: 1 | 2 | 3): 1 | 2 | 3 {
   return p === 1 ? 3 : p === 3 ? 2 : 1;
+}
+
+function extractDate(iso: string | null | undefined): string {
+  if (!iso) return "";
+  return iso.split("T")[0];
+}
+
+function extractTime(iso: string | null | undefined): string {
+  if (!iso) return "";
+  if (iso.endsWith("T00:00:00.000Z") || iso.endsWith("T00:00:00Z")) return "";
+  const d = new Date(iso);
+  return `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
 }
 
 function formatDate(iso: string) {
@@ -31,10 +44,17 @@ function formatDate(iso: string) {
   const target = new Date(d);
   target.setHours(0, 0, 0, 0);
 
-  if (+target === +today) return "Hari Ini";
-  if (+target === +tomorrow) return "Besok";
+  let datePart: string;
+  if (+target === +today) datePart = "Hari Ini";
+  else if (+target === +tomorrow) datePart = "Besok";
+  else datePart = d.toLocaleDateString("id-ID", { day: "numeric", month: "short" });
 
-  return d.toLocaleDateString("id-ID", { day: "numeric", month: "short" });
+  if (!iso.endsWith("T00:00:00.000Z") && !iso.endsWith("T00:00:00Z")) {
+    const time = d.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" });
+    return `${datePart} ${time}`;
+  }
+
+  return datePart;
 }
 
 export function TaskItem({
@@ -49,10 +69,13 @@ export function TaskItem({
   onDelete,
   onUpdate,
   className,
+  timePickerDate,
 }: TaskItemProps) {
   const [editing, setEditing] = useState(false);
   const [editValue, setEditValue] = useState(title);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  const [pickerTime, setPickerTime] = useState(() => extractTime(deadline));
 
   useEffect(() => {
     if (editing) {
@@ -85,6 +108,14 @@ export function TaskItem({
     onUpdate?.(id, { priority: nextPriority(priority) });
   }
 
+  function handleTimeChange(time: string | undefined) {
+    setPickerTime(time ?? "");
+    const date = timePickerDate ?? extractDate(deadline);
+    if (date) {
+      onUpdate?.(id, { deadline: time ? `${date}T${time}` : date });
+    }
+  }
+
   const showBar = !done && priority >= 2;
 
   const showCategoryBar = !!categoryColor && !done;
@@ -115,79 +146,92 @@ export function TaskItem({
             title={priority === 3 ? "Prioritas Tinggi" : "Prioritas Sedang"}
           />
         )}
-        <div className="group flex items-center gap-2.5 flex-1 px-3.5 py-2.5">
-          {categoryColor && categoryName && !done && (
-            <div
-              className="flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-medium leading-none"
-              style={{ backgroundColor: `${categoryColor}1A`, color: categoryColor }}
+        <div className="group flex flex-1 flex-col">
+          <div className="flex items-center gap-2.5 px-3.5 py-2.5">
+            {categoryColor && categoryName && !done && (
+              <div
+                className="flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-medium leading-none"
+                style={{ backgroundColor: `${categoryColor}1A`, color: categoryColor }}
+              >
+                <div className="size-1.5 rounded-full shrink-0" style={{ backgroundColor: categoryColor }} />
+                {categoryName}
+              </div>
+            )}
+            <button
+              type="button"
+              onClick={() => onToggle?.(id)}
+              className={cn(
+                "flex size-5 shrink-0 items-center justify-center rounded-full border-2 transition-all duration-150 active:scale-90",
+                done
+                  ? "border-success bg-success text-white"
+                  : "border-muted-foreground/35 group-hover:border-primary/50",
+              )}
             >
-              <div className="size-1.5 rounded-full shrink-0" style={{ backgroundColor: categoryColor }} />
-              {categoryName}
+              {done && (
+                <svg className="size-3" viewBox="0 0 12 12" fill="none">
+                  <path
+                    d="M2.5 6L5 8.5L9.5 3.5"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              )}
+            </button>
+
+            {editing ? (
+            <input
+              ref={inputRef}
+              type="text"
+              value={editValue}
+              onChange={(e) => setEditValue(e.target.value)}
+              onBlur={saveEdit}
+              onKeyDown={handleKeyDown}
+              className="flex-1 rounded-md border border-primary/40 bg-background px-2 py-0.5 text-sm text-foreground outline-none ring-2 ring-primary/20"
+            />
+          ) : (
+            <span
+              onDoubleClick={handleDoubleClick}
+              className={cn(
+                "flex-1 text-sm transition-colors duration-150 cursor-default",
+                done
+                  ? "text-muted-foreground/70 line-through"
+                  : "text-foreground",
+              )}
+            >
+              {title}
+            </span>
+          )}
+
+            {!done && deadline && formatDate(deadline) !== "Hari Ini" && (
+              <span className="hidden text-[11px] text-muted-foreground/50 sm:inline">
+                {formatDate(deadline)}
+              </span>
+            )}
+
+            {onDelete && (
+              <button
+                type="button"
+                onClick={() => onDelete(id)}
+                className="shrink-0 opacity-0 transition-all duration-150 group-hover:opacity-100 hover:text-destructive"
+              >
+                <Trash2 className="size-3.5 text-muted-foreground/40 hover:text-destructive" />
+              </button>
+            )}
+          </div>
+
+          {!done && timePickerDate && onUpdate && (
+            <div className="flex items-center gap-2 border-t border-border/40 px-3.5 py-1.5">
+              <input
+                type="time"
+                value={pickerTime}
+                onChange={(e) => handleTimeChange(e.target.value || undefined)}
+                className="w-full rounded-[6px] border border-border bg-background px-2 py-1 text-[11px] text-foreground focus:border-primary/50 focus:ring-2 focus:ring-primary/20 focus:outline-none"
+              />
             </div>
           )}
-          <button
-            type="button"
-            onClick={() => onToggle?.(id)}
-            className={cn(
-              "flex size-5 shrink-0 items-center justify-center rounded-full border-2 transition-all duration-150 active:scale-90",
-              done
-                ? "border-success bg-success text-white"
-                : "border-muted-foreground/35 group-hover:border-primary/50",
-            )}
-          >
-            {done && (
-              <svg className="size-3" viewBox="0 0 12 12" fill="none">
-                <path
-                  d="M2.5 6L5 8.5L9.5 3.5"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            )}
-          </button>
-
-          {editing ? (
-          <input
-            ref={inputRef}
-            type="text"
-            value={editValue}
-            onChange={(e) => setEditValue(e.target.value)}
-            onBlur={saveEdit}
-            onKeyDown={handleKeyDown}
-            className="flex-1 rounded-md border border-primary/40 bg-background px-2 py-0.5 text-sm text-foreground outline-none ring-2 ring-primary/20"
-          />
-        ) : (
-          <span
-            onDoubleClick={handleDoubleClick}
-            className={cn(
-              "flex-1 text-sm transition-colors duration-150 cursor-default",
-              done
-                ? "text-muted-foreground/70 line-through"
-                : "text-foreground",
-            )}
-          >
-            {title}
-          </span>
-        )}
-
-        {!done && deadline && formatDate(deadline) !== "Hari Ini" && (
-          <span className="hidden text-[11px] text-muted-foreground/50 sm:inline">
-            {formatDate(deadline)}
-          </span>
-        )}
-
-        {onDelete && (
-          <button
-            type="button"
-            onClick={() => onDelete(id)}
-            className="shrink-0 opacity-0 transition-all duration-150 group-hover:opacity-100 hover:text-destructive"
-          >
-            <Trash2 className="size-3.5 text-muted-foreground/40 hover:text-destructive" />
-          </button>
-        )}
-      </div>
+        </div>
       </div>
     </div>
   );

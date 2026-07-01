@@ -189,6 +189,7 @@ export default function KalenderPage() {
                   onToggle={handleToggle}
                   onUpdate={handleUpdate}
                   onDelete={handleDelete}
+                  timePickerDate={selectedDateStr}
                 />
               ))}
               {selectedTodos?.length === 0 && (

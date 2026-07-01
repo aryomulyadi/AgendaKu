@@ -168,6 +168,20 @@
 - [x] Semua Tugas: `toDateKey` pakai local timezone (`.getFullYear/getMonth/getDate`) bukan UTC `slice(0,10)`
 - [x] TaskItem: date picker icon hanya render jika `onUpdate` ada
 
+## Phase 8b — Remember Me
+
+- [x] loginSchema: hapus rememberMe (pakai state lokal, bukan react-hook-form)
+- [x] LoginForm: tambah checkbox "Ingat Saya" + kirim rememberMe ke signIn
+- [x] auth.ts: tambah field rememberMe di credentials + pass ke authorize return
+- [x] auth.config.ts: custom JWT encode/decode (Web Crypto HMAC-SHA256) — rememberMe=true → 30 hari, false → 24 jam
+- [x] RegisterForm + registerAction: kirim rememberMe: "true" saat auto-login
+
+## Phase 8c — Jam Opsional di Kalender
+
+- [x] TaskItem: `formatDate` tampilkan jam (HH:mm) jika deadline bukan midnight UTC
+- [x] TaskItem: prop baru `timePickerDate` — render hanya input time (date dari konteks kalender)
+- [x] Kalender page: task detail panel pakai `timePickerDate` agar user bisa set jam
+
 ## Phase 9 — Rilis
 
 - [ ] Setup PostgreSQL
