@@ -264,6 +264,15 @@
 
 ---
 
+## Phase 17 — MVP Completion (Search Fix + Filter Terlambat)
+
+- [x] Fix search navigation — `getTaskPage()`: deadline → `/dashboard/kalender`, null → `/dashboard/semua-tugas`
+- [x] Filter "Terlambat" — today-task-list.tsx (chip + overdue filter logic via `deadline < getTodayISO()`)
+- [x] Filter "Terlambat" — semua-tugas/page.tsx (chip + filter logic + empty state)
+- [x] Build & lint — 0 errors, 4 warnings (pre-existing img warnings)
+
+---
+
 - [ ] Setup PostgreSQL (future)
 - [ ] Deploy (future)
 

@@ -5,7 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { AnimatePresence, motion } from "framer-motion";
 import { Inbox } from "lucide-react";
 import { toast } from "sonner";
-import { cn, numToPriority } from "@/lib/utils";
+import { cn, numToPriority, getTodayISO } from "@/lib/utils";
 import { TaskItem } from "@/components/task/task-item";
 import { TaskInput } from "@/components/task/task-input";
 import { getTodayTodos, getDateTodos } from "@/lib/actions/todo";
@@ -17,7 +17,7 @@ import {
 } from "@/hooks/use-todos";
 import { useCategories } from "@/hooks/use-categories";
 
-type Filter = "all" | "active" | "done";
+type Filter = "all" | "active" | "done" | "overdue";
 
 const dayNames = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
 const monthNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
@@ -77,9 +77,11 @@ export function TodayTaskList({ selectedDate }: TodayTaskListProps) {
     deleteMutation.mutate(id, { onError: () => toast.error("Gagal menghapus agenda") });
   }
 
+  const today = getTodayISO();
   const filtered = (todos ?? []).filter((t) => {
     if (filter === "active") return !t.done;
     if (filter === "done") return t.done;
+    if (filter === "overdue") return !t.done && t.deadline !== null && t.deadline.slice(0, 10) < today;
     return true;
   });
 
@@ -93,7 +95,7 @@ export function TodayTaskList({ selectedDate }: TodayTaskListProps) {
           {title}
         </h2>
         <div className="flex items-center gap-1">
-          {(["all", "active", "done"] as const).map((f) => (
+          {(["all", "active", "done", "overdue"] as const).map((f) => (
             <button
               key={f}
               type="button"
@@ -105,7 +107,7 @@ export function TodayTaskList({ selectedDate }: TodayTaskListProps) {
                   : "text-muted-foreground/60 hover:text-foreground hover:bg-muted/50",
               )}
             >
-              {f === "all" ? "Semua" : f === "active" ? "Aktif" : "Selesai"}
+              {f === "all" ? "Semua" : f === "active" ? "Aktif" : f === "done" ? "Selesai" : "Terlambat"}
             </button>
           ))}
         </div>
@@ -162,7 +164,7 @@ export function TodayTaskList({ selectedDate }: TodayTaskListProps) {
                 <Inbox className="size-5" />
               </div>
               <p className="text-sm text-muted-foreground/60">
-                Tidak ada agenda {filter === "active" ? "aktif" : "selesai"}
+                Tidak ada agenda {filter === "active" ? "aktif" : filter === "done" ? "selesai" : "terlambat"}
               </p>
             </div>
           )}

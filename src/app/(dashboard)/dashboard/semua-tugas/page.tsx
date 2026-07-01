@@ -3,7 +3,7 @@
 import { useState, useMemo, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { toast } from "sonner";
-import { cn, numToPriority } from "@/lib/utils";
+import { cn, numToPriority, getTodayISO } from "@/lib/utils";
 import { Inbox, Search } from "lucide-react";
 import { TaskItem } from "@/components/task/task-item";
 import {
@@ -13,7 +13,7 @@ import {
   useDeleteTodo,
 } from "@/hooks/use-todos";
 
-type Filter = "all" | "active" | "done";
+type Filter = "all" | "active" | "done" | "overdue";
 
 const dayNames = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
 const monthNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
@@ -76,9 +76,11 @@ export default function SemuaTugasPage() {
     deleteMutation.mutate(id, { onError: () => toast.error("Gagal menghapus agenda") });
   }
 
+  const today = getTodayISO();
   const filtered = (todos ?? []).filter((t) => {
     if (filter === "active") return !t.done;
     if (filter === "done") return t.done;
+    if (filter === "overdue") return !t.done && t.deadline !== null && t.deadline.slice(0, 10) < today;
     return true;
   }).filter((t) => {
     if (!searchQuery.trim()) return true;
@@ -121,7 +123,7 @@ export default function SemuaTugasPage() {
           />
         </div>
         <div className="flex items-center gap-1">
-          {(["all", "active", "done"] as const).map((f) => (
+          {(["all", "active", "done", "overdue"] as const).map((f) => (
             <button
               key={f}
               type="button"
@@ -133,7 +135,7 @@ export default function SemuaTugasPage() {
                   : "text-muted-foreground/60 hover:text-foreground hover:bg-muted/50",
               )}
             >
-              {f === "all" ? "Semua" : f === "active" ? "Aktif" : "Selesai"}
+              {f === "all" ? "Semua" : f === "active" ? "Aktif" : f === "done" ? "Selesai" : "Terlambat"}
             </button>
           ))}
         </div>
@@ -196,7 +198,7 @@ export default function SemuaTugasPage() {
                   ? "Tidak ada agenda yang cocok"
                   : filter === "all"
                     ? "Belum ada agenda"
-                    : `Tidak ada agenda ${filter === "active" ? "aktif" : "selesai"}`}
+                    : `Tidak ada agenda ${filter === "active" ? "aktif" : filter === "done" ? "selesai" : "terlambat"}`}
               </p>
             </div>
           )}

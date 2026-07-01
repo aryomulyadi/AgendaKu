@@ -32,16 +32,8 @@ function getFormattedDate(): string {
 }
 
 function getTaskPage(task: { deadline: string | null }): string {
-  if (!task.deadline) return "/dashboard/hari-ini";
-  const now = new Date();
-  const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
-  const tomorrowD = new Date(now);
-  tomorrowD.setDate(tomorrowD.getDate() + 1);
-  const tomorrow = `${tomorrowD.getFullYear()}-${String(tomorrowD.getMonth() + 1).padStart(2, "0")}-${String(tomorrowD.getDate()).padStart(2, "0")}`;
-  const deadlineDate = task.deadline.slice(0, 10);
-  if (deadlineDate === today) return "/dashboard/hari-ini";
-  if (deadlineDate === tomorrow) return "/dashboard/besok";
-  return "/dashboard/kalender";
+  if (task.deadline) return "/dashboard/kalender";
+  return "/dashboard/semua-tugas";
 }
 
 export function DashboardHeader() {
