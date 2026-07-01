@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { Trash2, Calendar } from "lucide-react";
+import { Trash2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface TaskItemProps {
@@ -31,7 +31,7 @@ function formatDate(iso: string) {
   const target = new Date(d);
   target.setHours(0, 0, 0, 0);
 
-  if (+target === +today) return "Hari ini";
+  if (+target === +today) return "Hari Ini";
   if (+target === +tomorrow) return "Besok";
 
   return d.toLocaleDateString("id-ID", { day: "numeric", month: "short" });
@@ -85,10 +85,6 @@ export function TaskItem({
     onUpdate?.(id, { priority: nextPriority(priority) });
   }
 
-  function handleDeadlineChange(e: React.ChangeEvent<HTMLInputElement>) {
-    onUpdate?.(id, { deadline: e.target.value || null });
-  }
-
   const showBar = !done && priority >= 2;
 
   const showCategoryBar = !!categoryColor && !done;
@@ -96,7 +92,7 @@ export function TaskItem({
   return (
     <div
       className={cn(
-        "group flex-col rounded-[10px] border transition-all duration-150 hover:-translate-y-[1px] overflow-hidden",
+        "flex-col rounded-[10px] border transition-all duration-150 hover:-translate-y-[1px] overflow-hidden",
         done
           ? "border-success/15 bg-success/5 hover:border-success/25 hover:bg-success/[0.07]"
           : "border-border/60 bg-surface hover:border-border hover:bg-white/[0.06]",
@@ -119,7 +115,7 @@ export function TaskItem({
             title={priority === 3 ? "Prioritas Tinggi" : "Prioritas Sedang"}
           />
         )}
-        <div className="flex items-center gap-2.5 flex-1 px-3.5 py-2.5">
+        <div className="group flex items-center gap-2.5 flex-1 px-3.5 py-2.5">
           {categoryColor && categoryName && !done && (
             <div
               className="flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-medium leading-none"
@@ -176,22 +172,10 @@ export function TaskItem({
           </span>
         )}
 
-        {!done && deadline && (
+        {!done && deadline && formatDate(deadline) !== "Hari Ini" && (
           <span className="hidden text-[11px] text-muted-foreground/50 sm:inline">
             {formatDate(deadline)}
           </span>
-        )}
-
-        {!done && onUpdate && (
-          <label className="shrink-0 opacity-0 transition-all duration-150 group-hover:opacity-100 hover:text-destructive cursor-pointer">
-            <Calendar className="size-3.5 text-muted-foreground/40 hover:text-primary" />
-            <input
-              type="date"
-              value={deadline ?? ""}
-              onChange={handleDeadlineChange}
-              className="hidden"
-            />
-          </label>
         )}
 
         {onDelete && (

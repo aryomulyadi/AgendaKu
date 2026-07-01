@@ -147,6 +147,16 @@
 - [x] TaskItem: hapus Calendar icon dekoratif (duplicate, tidak interaktif)
 - [x] AppPreview: ganti TaskInput → mock visual-only (tidak bisa diketik)
 
+## Phase 7c — Bugfixes
+
+- [x] TaskItem: hapus label "Hari Ini" redundant di date span (deadline hari ini tidak tampil)
+- [x] TaskItem: perbaiki icon Calendar tidak berfungsi — ganti `<label>` wrapping SVG jadi `<button>` + `showPicker()`
+- [x] TaskItem: pindahkan class `group` dari outer card ke inner content div agar hover priority bar tidak trigger icon calendar/delete
+
+## Phase 7d — Bugfixes (icon Calendar)
+
+- [x] TaskItem: hapus seluruh icon Calendar + hidden date input karena tidak berfungsi
+
 ## Phase 8 — Performance Polish
 
 - [x] QueryProvider: `staleTime` 30s → 5min, tambah `refetchOnWindowFocus: false`
