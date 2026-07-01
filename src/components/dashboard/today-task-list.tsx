@@ -1,13 +1,15 @@
 "use client";
 
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { AnimatePresence, motion } from "framer-motion";
+import { Inbox } from "lucide-react";
 import { toast } from "sonner";
 import { cn, numToPriority } from "@/lib/utils";
 import { TaskItem } from "@/components/task/task-item";
 import { TaskInput } from "@/components/task/task-input";
+import { getTodayTodos, getDateTodos } from "@/lib/actions/todo";
 import {
-  useTodayTodos,
-  useDateTodos,
   useCreateTodo,
   useToggleTodo,
   useUpdateTodo,
@@ -31,17 +33,15 @@ interface TodayTaskListProps {
 }
 
 export function TodayTaskList({ selectedDate }: TodayTaskListProps) {
-  const todayQuery = useTodayTodos();
-  const dateQuery = useDateTodos(selectedDate ?? null);
+  const { isLoading, isError, data: todos } = useQuery({
+    queryKey: selectedDate ? ["todos", "date", selectedDate] : ["todos", "today"],
+    queryFn: () => (selectedDate ? getDateTodos(selectedDate) : getTodayTodos()),
+  });
   const { data: categories } = useCategories();
   const createMutation = useCreateTodo();
   const toggleMutation = useToggleTodo();
   const updateMutation = useUpdateTodo();
   const deleteMutation = useDeleteTodo();
-
-  const isLoading = selectedDate ? dateQuery.isLoading : todayQuery.isLoading;
-  const isError = selectedDate ? dateQuery.isError : todayQuery.isError;
-  const todos = selectedDate ? dateQuery.data : todayQuery.data;
 
   const [filter, setFilter] = useState<Filter>("all");
   const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
@@ -121,30 +121,50 @@ export function TodayTaskList({ selectedDate }: TodayTaskListProps) {
         </div>
       ) : (
         <div className="space-y-1">
-          {filtered?.map((task) => (
-            <TaskItem
-              key={task.id}
-              id={task.id}
-              title={task.title}
-              done={task.done}
-              priority={task.priority}
-              deadline={task.deadline}
-              categoryColor={task.categoryColor}
-              categoryName={task.categoryName}
-              onToggle={handleToggle}
-              onUpdate={handleUpdate}
-              onDelete={handleDelete}
-            />
-          ))}
+          <AnimatePresence initial={false}>
+            {filtered?.map((task) => (
+              <motion.div
+                key={task.id}
+                layout
+                initial={{ opacity: 0, y: -6 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, x: -16 }}
+                transition={{ duration: 0.15 }}
+              >
+                <TaskItem
+                  id={task.id}
+                  title={task.title}
+                  done={task.done}
+                  priority={task.priority}
+                  deadline={task.deadline}
+                  categoryColor={task.categoryColor}
+                  categoryName={task.categoryName}
+                  onToggle={handleToggle}
+                  onUpdate={handleUpdate}
+                  onDelete={handleDelete}
+                />
+              </motion.div>
+            ))}
+          </AnimatePresence>
           {activeCount === 0 && filter === "all" && (
-            <p className="py-4 text-center text-sm text-muted-foreground/60">
-              {selectedDate ? "Tidak ada agenda di tanggal ini" : "Semua agenda selesai! 🎉"}
-            </p>
+            <div className="flex flex-col items-center gap-2 py-8">
+              <div className="flex size-10 items-center justify-center rounded-full bg-muted/50 text-muted-foreground/30">
+                <Inbox className="size-5" />
+              </div>
+              <p className="text-sm text-muted-foreground/60">
+                {selectedDate ? "Tidak ada agenda di tanggal ini" : "Semua agenda selesai! 🎉"}
+              </p>
+            </div>
           )}
           {filtered?.length === 0 && filter !== "all" && (
-            <p className="py-4 text-center text-sm text-muted-foreground/60">
-              Tidak ada agenda {filter === "active" ? "aktif" : "selesai"}
-            </p>
+            <div className="flex flex-col items-center gap-2 py-8">
+              <div className="flex size-10 items-center justify-center rounded-full bg-muted/50 text-muted-foreground/30">
+                <Inbox className="size-5" />
+              </div>
+              <p className="text-sm text-muted-foreground/60">
+                Tidak ada agenda {filter === "active" ? "aktif" : "selesai"}
+              </p>
+            </div>
           )}
         </div>
       )}

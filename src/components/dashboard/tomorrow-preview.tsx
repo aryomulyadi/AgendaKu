@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import { CalendarDays } from "lucide-react";
 import { toast } from "sonner";
-import { cn, numToPriority } from "@/lib/utils";
+import { cn, numToPriority, getTomorrowISO } from "@/lib/utils";
 import { TaskItem } from "@/components/task/task-item";
 import { TaskInput } from "@/components/task/task-input";
 import {
@@ -13,12 +14,6 @@ import {
   useDeleteTodo,
 } from "@/hooks/use-todos";
 import { useCategories } from "@/hooks/use-categories";
-
-function getTomorrowISO() {
-  const d = new Date();
-  d.setDate(d.getDate() + 1);
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
-}
 
 export function TomorrowPreview() {
   const { data: tasks, isLoading, isError } = useTomorrowTodos();
@@ -59,7 +54,7 @@ export function TomorrowPreview() {
   }
 
   return (
-    <section className="opacity-80">
+    <section className="opacity-90">
       <div className="mb-3">
         <h3 className="text-[11px] font-medium tracking-wide text-muted-foreground/60 uppercase">
           Besok
@@ -115,7 +110,10 @@ export function TomorrowPreview() {
                   id={task.id}
                   title={task.title}
                   done={task.done}
-                  priority={1}
+                  priority={task.priority}
+                  deadline={task.deadline}
+                  categoryColor={task.categoryColor}
+                  categoryName={task.categoryName}
                   onToggle={handleToggle}
                   onDelete={handleDelete}
                   onUpdate={handleUpdate}
@@ -124,9 +122,14 @@ export function TomorrowPreview() {
             </div>
           ))}
           {tasks?.length === 0 && (
-            <p className="py-3 text-center text-xs text-muted-foreground/40">
-              Belum ada agenda untuk besok
-            </p>
+            <div className="flex flex-col items-center gap-2 py-6">
+              <div className="flex size-8 items-center justify-center rounded-full bg-muted/30 text-muted-foreground/30">
+                <CalendarDays className="size-4" />
+              </div>
+              <p className="text-xs text-muted-foreground/40">
+                Belum ada agenda untuk besok
+              </p>
+            </div>
           )}
         </div>
       )}

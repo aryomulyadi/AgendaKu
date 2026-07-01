@@ -116,22 +116,6 @@ export async function getTodayStats() {
   };
 }
 
-export async function getFocusTask() {
-  const session = await auth();
-  if (!session?.user?.id) return null;
-
-  const { start, end } = getTodayRange();
-
-  const task = await prisma.todo.findFirst({
-    where: { userId: session.user.id, completed: false, OR: todayOrNoDeadline(start, end) },
-    include: { category: { select: { id: true, name: true, color: true } } },
-    orderBy: { priority: "desc" },
-  });
-
-  if (!task) return null;
-  return mapTodo(task);
-}
-
 export async function getTomorrowTodos() {
   const session = await auth();
   if (!session?.user?.id) return [];
@@ -147,17 +131,43 @@ export async function getTomorrowTodos() {
         { completed: false, deadline: null, createdAt: { gte: todayStart } },
       ],
     },
-    orderBy: { priority: "desc" },
-    take: 5,
+    include: { category: { select: { id: true, name: true, color: true } } },
+    orderBy: [{ completed: "asc" }, { priority: "desc" }, { createdAt: "desc" }],
+    take: 10,
   });
 
   const deadlineTasks = todos.filter((t) => t.deadline && t.deadline >= start && t.deadline <= end);
   const carryOver = todos.filter((t) => !t.deadline && !t.completed);
 
-  const mapped = deadlineTasks.slice(0, 3).map((t) => ({ id: t.id, title: t.title, done: t.completed, carryOver: false as const }));
-  const mappedCarry = carryOver.slice(0, 2).map((t) => ({ id: t.id, title: t.title, done: t.completed, carryOver: true as const }));
+  const mapped = deadlineTasks.slice(0, 3).map((t) => ({ ...mapTodo(t), carryOver: false as const }));
+  const mappedCarry = carryOver.slice(0, 2).map((t) => ({ ...mapTodo(t), carryOver: true as const }));
 
   return [...mapped, ...mappedCarry].slice(0, 5);
+}
+
+export async function getBesokTodos() {
+  const session = await auth();
+  if (!session?.user?.id) return [];
+
+  const { start, end } = getTomorrowRange();
+  const { start: todayStart } = getTodayRange();
+
+  const todos = await prisma.todo.findMany({
+    where: {
+      userId: session.user.id,
+      OR: [
+        { deadline: { gte: start, lte: end } },
+        { completed: false, deadline: null, createdAt: { gte: todayStart } },
+      ],
+    },
+    include: { category: { select: { id: true, name: true, color: true } } },
+    orderBy: [{ completed: "asc" }, { priority: "desc" }, { createdAt: "desc" }],
+  });
+
+  return todos.map((t) => ({
+    ...mapTodo(t),
+    carryOver: !t.deadline as boolean,
+  }));
 }
 
 export async function createTodo(data: CreateTodoInput) {
@@ -239,7 +249,10 @@ export async function getDateTodos(dateStr: string) {
   const session = await auth();
   if (!session?.user?.id) return [];
 
-  const [year, month, day] = dateStr.split("-").map(Number);
+  const parts = dateStr.split("-");
+  if (parts.length !== 3) return [];
+  const [year, month, day] = parts.map(Number);
+  if (isNaN(year) || isNaN(month) || isNaN(day)) return [];
   const start = new Date(year, month - 1, day, 0, 0, 0, 0);
   const end = new Date(year, month - 1, day, 23, 59, 59, 999);
 

@@ -197,6 +197,73 @@
 - [x] Pindah `prisma` dari `dependencies` → `devDependencies` di `package.json`
 - [x] Hapus dummy Credentials provider di `auth.config.ts` (real provider di `auth.ts`, array dikosongkan)
 - [x] Build & lint — 0 errors, 3 warnings (pre-existing img warnings)
+
+## Phase 11 — Bugfix Batch
+
+- [x] Fix `getTomorrowTodos()` — naikkan `take: 5` → `take: 10`, perbaiki slicing logic, tambah `include: { category }`, return full shape via `mapTodo`
+- [x] Fix `TomorrowPreview` — ganti hardcoded `priority={1}` ke data asli (`priority`, `deadline`, `categoryColor`, `categoryName`)
+- [x] Fix query invalidation — tambah `["todos", "focus"]` & `["todos", "completed"]` ke semua mutation, ganti `onSettled` → `onSuccess` di `useToggleTodo`
+- [x] Konsolidasi Pengaturan page — ganti `useEffect` + `getProfile()` manual ke `useProfile()` hook
+- [x] Fix double-fetch Hari Ini — `TodayTaskList` panggil `useQuery` kondisional, bukan kedua hook selalu
+- [x] Validasi input `getDateTodos` — cek format `YYYY-MM-DD`, return `[]` kalau invalid
+- [x] Build & lint — 0 errors, 3 warnings (pre-existing img warnings)
+
+## Phase 12 — Aksesibilitas & Mobile Polish
+
+- [x] Mobile search fallback — tombol Search icon di `<sm` yang toggle search bar
+- [x] `aria-label` di icon-only buttons: Sheet trigger, delete, priority bar, prev/next month, search clear, password toggle
+- [x] Search dropdown: `role="listbox"`, `role="option"`, `aria-selected`, `aria-live="polite"`
+- [x] Modal delete kategori: `role="dialog"`, `aria-modal="true"`, `aria-labelledby`
+- [x] Form `aria-invalid` + `aria-describedby` di login & register inputs
+- [x] Hapus duplicate `--color-accent` di `globals.css` (hardcoded + CSS variable, duplikat)
+- [x] Build & lint — 0 errors, 3 warnings (pre-existing img warnings)
+
+## Phase 13 — Polish & Configuration
+
+- [x] Fix `--color-secondary` — hardcoded `#8C857D` → CSS variable `var(--secondary)` + dark mode value `#6B6358`
+- [x] Add `loading.tsx` untuk 7 halaman sidebar (hari-ini, besok, semua-tugas, selesai, kalender, kategori, pengaturan)
+- [x] Config `next.config.ts` — security headers (X-Frame-Options, X-Content-Type-Options, Referrer-Policy)
+- [x] Tambah `public/robots.txt` — allow `/`, disallow `/dashboard` `/api`
+- [x] Tambah `public/sitemap.xml` — landing, login, register pages
+- [x] Build & lint — 0 errors, 3 warnings (pre-existing img warnings)
+## Phase 14 — Animasi framer-motion
+
+- [x] TaskItem enter/exit — AnimatePresence + motion.div di today-task-list.tsx, besok, semua-tugas, selesai, kalender
+- [x] Page transition — PageTransition client component wrapping `{children}` di dashboard layout
+- [x] Search dropdown — AnimatePresence + scale/fade di dashboard-header.tsx
+- [x] Progress bar — spring animation (stiffness: 80, damping: 15) di today-summary.tsx
+- [x] Build & lint — 0 errors, 3 warnings (pre-existing img warnings)
+
+---
+
+## Phase 15 — Bugfix Batch 2
+
+- [x] Focus Task — hapus dead code (getFocusTask action + useFocusTask hook + keys.focus)
+- [x] Search klik — navigasi ke halaman relevan via router.push (hari-ini/besok/kalender berdasarkan deadline)
+- [x] MiniCalendar — fix `isCurrentMonth()` collision via index parameter (ganti indexOf dengan idx dari map)
+- [x] Besok page — gunakan action baru `getBesokTodos()` (merge deadline besok + carry-over tanpa limit), hook `useBesokTodos()`, render carry-over dengan visual amber + "Tertunda" label
+- [x] Build & lint — 0 errors, 3 warnings (pre-existing img warnings)
+
+---
+
+## Phase 16 — Configuration & Consistency
+
+- [x] proxy.ts — confirmed correct for Next.js 16 (convention, bukan middleware.ts)
+- [x] Font fix — globals.css: `--font-sans` ganti `var(--font-inter)` → `var(--font-geist)`
+- [x] Duplikat `getTomorrowISO()` — tomorrow-preview.tsx import dari `@/lib/utils`, hapus local definition
+- [x] Weekday consistency — mini-calendar Senin-first + grid offset fix, match Calendar page
+- [x] CTA copy — landing hero "Mulai Sekarang" → "Mulai Gratis" (konsisten dengan navbar)
+- [x] Sheet close button — tambah `showCloseButton={false}` di sidebar.tsx
+- [x] Auth card logo — ganti "K" huruf dengan `<img>` logo AgendaKu
+- [x] Bersihkan default Vercel SVGs — hapus 5 file (file.svg, globe.svg, next.svg, vercel.svg, window.svg)
+- [x] Pengaturan useEffect — eslint-disable pada setProfileName + setProfileEmail
+- [x] Empty states — tambah icon + wrapper flex di 7 lokasi (Inbox, CalendarDays, CheckCheck, Tag)
+- [x] TomorrowPreview opacity — `opacity-80` → `opacity-90`
+- [x] Fix dashboard error — hapus `.next` cache (korup karena rename proxy.ts → middleware.ts → proxy.ts)
+- [x] Build & lint — 0 errors, 4 warnings (pre-existing img warnings)
+
+---
+
 - [ ] Setup PostgreSQL (future)
 - [ ] Deploy (future)
 

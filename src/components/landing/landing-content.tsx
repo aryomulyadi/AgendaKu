@@ -27,7 +27,7 @@ export function LandingContent() {
                   href="/register"
                   className="inline-flex h-10 items-center justify-center rounded-[10px] bg-primary px-5 text-sm font-medium text-primary-foreground shadow-xs transition-all duration-150 hover:bg-[#D0311E] active:translate-y-px"
                 >
-                  Mulai Sekarang
+                  Mulai Gratis
                 </Link>
               </div>
             </div>

@@ -1,9 +1,10 @@
 "use client";
 
 import { useState, useMemo, useEffect } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import { toast } from "sonner";
 import { cn, numToPriority } from "@/lib/utils";
-import { Search } from "lucide-react";
+import { Inbox, Search } from "lucide-react";
 import { TaskItem } from "@/components/task/task-item";
 import {
   useAllTodos,
@@ -157,32 +158,47 @@ export default function SemuaTugasPage() {
                 <div className="flex-1 border-t border-border/40" />
               </div>
               <div className="space-y-1">
-                {tasks.map((task) => (
-                  <TaskItem
-                    key={task.id}
-                    id={task.id}
-                    title={task.title}
-                    done={task.done}
-                    priority={task.priority}
-                    deadline={task.deadline}
-                    categoryColor={task.categoryColor}
-                    categoryName={task.categoryName}
-                    onToggle={handleToggle}
-                    onUpdate={handleUpdate}
-                    onDelete={handleDelete}
-                  />
-                ))}
+                <AnimatePresence initial={false}>
+                  {tasks.map((task) => (
+                    <motion.div
+                      key={task.id}
+                      layout
+                      initial={{ opacity: 0, y: -6 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, x: -16 }}
+                      transition={{ duration: 0.15 }}
+                    >
+                      <TaskItem
+                        id={task.id}
+                        title={task.title}
+                        done={task.done}
+                        priority={task.priority}
+                        deadline={task.deadline}
+                        categoryColor={task.categoryColor}
+                        categoryName={task.categoryName}
+                        onToggle={handleToggle}
+                        onUpdate={handleUpdate}
+                        onDelete={handleDelete}
+                      />
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
               </div>
             </div>
           ))}
           {groups.length === 0 && (
-            <p className="py-8 text-center text-sm text-muted-foreground/60">
-              {searchQuery
-                ? "Tidak ada agenda yang cocok"
-                : filter === "all"
-                  ? "Belum ada agenda"
-                  : `Tidak ada agenda ${filter === "active" ? "aktif" : "selesai"}`}
-            </p>
+            <div className="flex flex-col items-center gap-2 py-8">
+              <div className="flex size-10 items-center justify-center rounded-full bg-muted/50 text-muted-foreground/30">
+                <Inbox className="size-5" />
+              </div>
+              <p className="text-sm text-muted-foreground/60">
+                {searchQuery
+                  ? "Tidak ada agenda yang cocok"
+                  : filter === "all"
+                    ? "Belum ada agenda"
+                    : `Tidak ada agenda ${filter === "active" ? "aktif" : "selesai"}`}
+              </p>
+            </div>
           )}
         </div>
       )}

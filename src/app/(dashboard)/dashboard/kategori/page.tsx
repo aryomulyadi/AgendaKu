@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { toast } from "sonner";
-import { Plus, Pencil, Trash2, Check, X } from "lucide-react";
+import { Plus, Pencil, Trash2, Check, X, Tag } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useCategories, useCreateCategory, useUpdateCategory, useDeleteCategory } from "@/hooks/use-categories";
 
@@ -127,9 +127,14 @@ export default function CategoriesPage() {
             <div key={i} className="h-[52px] rounded-[10px] bg-muted/50 animate-pulse" />
           ))
         ) : categories?.length === 0 ? (
-          <p className="py-8 text-center text-sm text-muted-foreground/60">
-            Belum ada kategori. Buat kategori pertama Anda.
-          </p>
+          <div className="flex flex-col items-center gap-2 py-8">
+            <div className="flex size-10 items-center justify-center rounded-full bg-muted/50 text-muted-foreground/30">
+              <Tag className="size-5" />
+            </div>
+            <p className="text-sm text-muted-foreground/60">
+              Belum ada kategori. Buat kategori pertama Anda.
+            </p>
+          </div>
         ) : (
           categories?.map((cat) => (
             <div
@@ -194,9 +199,9 @@ export default function CategoriesPage() {
       </div>
 
       {deleteConfirm && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/20 backdrop-blur-sm">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/20 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="delete-dialog-title">
           <div className="w-80 rounded-[14px] border border-border bg-card p-5 shadow-lg">
-            <h3 className="text-sm font-semibold text-foreground">Hapus Kategori</h3>
+            <h3 id="delete-dialog-title" className="text-sm font-semibold text-foreground">Hapus Kategori</h3>
             <p className="mt-2 text-sm text-muted-foreground/70">
               Yakin ingin menghapus <span className="font-medium text-foreground">{deleteConfirm.name}</span>?
               Agenda dalam kategori ini tidak akan terhapus, hanya kategorinya yang dihapus.

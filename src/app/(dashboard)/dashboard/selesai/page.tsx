@@ -1,5 +1,7 @@
 "use client";
 
+import { AnimatePresence, motion } from "framer-motion";
+import { CheckCheck } from "lucide-react";
 import { toast } from "sonner";
 import { TaskItem } from "@/components/task/task-item";
 import { useCompletedTodos, useToggleTodo, useDeleteTodo } from "@/hooks/use-todos";
@@ -38,24 +40,39 @@ export default function SelesaiPage() {
         </div>
       ) : (
         <div className="space-y-1">
-          {todos?.map((task) => (
-            <TaskItem
-              key={task.id}
-              id={task.id}
-              title={task.title}
-              done={task.done}
-              priority={task.priority}
-              deadline={task.deadline}
-              categoryColor={task.categoryColor}
-              categoryName={task.categoryName}
-              onToggle={handleToggle}
-              onDelete={handleDelete}
-            />
-          ))}
+          <AnimatePresence initial={false}>
+            {todos?.map((task) => (
+              <motion.div
+                key={task.id}
+                layout
+                initial={{ opacity: 0, y: -6 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, x: -16 }}
+                transition={{ duration: 0.15 }}
+              >
+                <TaskItem
+                  id={task.id}
+                  title={task.title}
+                  done={task.done}
+                  priority={task.priority}
+                  deadline={task.deadline}
+                  categoryColor={task.categoryColor}
+                  categoryName={task.categoryName}
+                  onToggle={handleToggle}
+                  onDelete={handleDelete}
+                />
+              </motion.div>
+            ))}
+          </AnimatePresence>
           {todos?.length === 0 && (
-            <p className="py-8 text-center text-sm text-muted-foreground/60">
-              Belum ada agenda yang selesai
-            </p>
+            <div className="flex flex-col items-center gap-2 py-8">
+              <div className="flex size-10 items-center justify-center rounded-full bg-muted/50 text-muted-foreground/30">
+                <CheckCheck className="size-5" />
+              </div>
+              <p className="text-sm text-muted-foreground/60">
+                Belum ada agenda yang selesai
+              </p>
+            </div>
           )}
         </div>
       )}

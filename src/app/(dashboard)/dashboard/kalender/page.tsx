@@ -1,8 +1,9 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import { toast } from "sonner";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Inbox } from "lucide-react";
 import { cn, numToPriority } from "@/lib/utils";
 import { TaskItem } from "@/components/task/task-item";
 import { useCalendarTasks, useDateTodos, useToggleTodo, useUpdateTodo, useDeleteTodo } from "@/hooks/use-todos";
@@ -93,13 +94,13 @@ export default function KalenderPage() {
 
       <div className="rounded-[14px] border border-border/60 bg-surface p-4 sm:p-5">
         <div className="mb-4 flex items-center justify-between">
-          <button onClick={prevMonth} className="flex size-8 items-center justify-center rounded-[8px] transition-colors hover:bg-muted/50">
+          <button onClick={prevMonth} aria-label="Bulan sebelumnya" className="flex size-8 items-center justify-center rounded-[8px] transition-colors hover:bg-muted/50">
             <ChevronLeft className="size-4 text-muted-foreground" />
           </button>
           <span className="text-sm font-semibold text-foreground">
             {monthNames[month]} {year}
           </span>
-          <button onClick={nextMonth} className="flex size-8 items-center justify-center rounded-[8px] transition-colors hover:bg-muted/50">
+          <button onClick={nextMonth} aria-label="Bulan berikutnya" className="flex size-8 items-center justify-center rounded-[8px] transition-colors hover:bg-muted/50">
             <ChevronRight className="size-4 text-muted-foreground" />
           </button>
         </div>
@@ -176,26 +177,41 @@ export default function KalenderPage() {
             </div>
           ) : (
             <div className="space-y-1">
-              {selectedTodos?.map((task) => (
-                <TaskItem
-                  key={task.id}
-                  id={task.id}
-                  title={task.title}
-                  done={task.done}
-                  priority={task.priority}
-                  deadline={task.deadline}
-                  categoryColor={task.categoryColor}
-                  categoryName={task.categoryName}
-                  onToggle={handleToggle}
-                  onUpdate={handleUpdate}
-                  onDelete={handleDelete}
-                  timePickerDate={selectedDateStr}
-                />
-              ))}
+              <AnimatePresence initial={false} mode="popLayout">
+                {selectedTodos?.map((task) => (
+                  <motion.div
+                    key={task.id}
+                    layout
+                    initial={{ opacity: 0, y: -6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, x: -16 }}
+                    transition={{ duration: 0.15 }}
+                  >
+                    <TaskItem
+                      id={task.id}
+                      title={task.title}
+                      done={task.done}
+                      priority={task.priority}
+                      deadline={task.deadline}
+                      categoryColor={task.categoryColor}
+                      categoryName={task.categoryName}
+                      onToggle={handleToggle}
+                      onUpdate={handleUpdate}
+                      onDelete={handleDelete}
+                      timePickerDate={selectedDateStr}
+                    />
+                  </motion.div>
+                ))}
+              </AnimatePresence>
               {selectedTodos?.length === 0 && (
-                <p className="py-4 text-center text-sm text-muted-foreground/60">
-                  Tidak ada agenda di tanggal ini
-                </p>
+                <div className="flex flex-col items-center gap-2 py-8">
+                  <div className="flex size-10 items-center justify-center rounded-full bg-muted/50 text-muted-foreground/30">
+                    <Inbox className="size-5" />
+                  </div>
+                  <p className="text-sm text-muted-foreground/60">
+                    Tidak ada agenda di tanggal ini
+                  </p>
+                </div>
               )}
             </div>
           )}

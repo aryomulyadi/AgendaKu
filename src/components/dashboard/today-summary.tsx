@@ -1,5 +1,6 @@
 "use client";
 
+import { motion } from "framer-motion";
 import { useTodayStats } from "@/hooks/use-todos";
 
 export function TodaySummary() {
@@ -45,9 +46,11 @@ export function TodaySummary() {
         )}
       </div>
       <div className="h-1 w-full overflow-hidden rounded-full bg-muted">
-        <div
-          className="h-full rounded-full bg-primary transition-all duration-300"
-          style={{ width: `${pct}%` }}
+        <motion.div
+          className="h-full rounded-full bg-primary"
+          initial={{ width: 0 }}
+          animate={{ width: `${pct}%` }}
+          transition={{ type: "spring", stiffness: 80, damping: 15 }}
         />
       </div>
     </section>

@@ -5,11 +5,10 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, monospace;
 
   --color-primary: #BE1A1A;
-  --color-accent: #F7D87F;
   --color-accent-soft: #F8EBAB;
   --color-success: #6BBF7A;
   --color-warning: #F7D87F;
@@ -27,8 +26,8 @@
   --color-popover: var(--popover);
   --color-popover-foreground: var(--popover-foreground);
   --color-primary-foreground: var(--primary-foreground);
-  --color-secondary: #8C857D;
-  --color-secondary-foreground: #FFFFFF;
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
   --color-accent: var(--accent);
@@ -56,6 +55,8 @@
   --popover-foreground: #1C1A18;
   --primary: #BE1A1A;
   --primary-foreground: #FFFFFF;
+  --secondary: #8C857D;
+  --secondary-foreground: #FFFFFF;
   --muted: #EEEBE5;
   --muted-foreground: #6F675C;
   --accent: #F7D87F;
@@ -88,6 +89,8 @@
   --popover-foreground: #F0EDE8;
   --primary: #D0311E;
   --primary-foreground: #FFFFFF;
+  --secondary: #6B6358;
+  --secondary-foreground: #FFFFFF;
   --muted: #2A2824;
   --muted-foreground: #9C9387;
   --accent: #F7D87F;

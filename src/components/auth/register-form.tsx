@@ -73,11 +73,13 @@ export function RegisterForm() {
           type="text"
           autoComplete="name"
           placeholder="Nama lengkap"
+          aria-invalid={!!errors.name}
+          aria-describedby={errors.name ? "name-error" : undefined}
           {...register("name")}
           className="w-full rounded-[10px] border border-border bg-background px-3.5 py-2 text-sm text-foreground placeholder:text-muted-foreground/50 transition-all duration-150 focus:border-primary/50 focus:ring-2 focus:ring-primary/20 focus:outline-none"
         />
         {errors.name && (
-          <p className="text-xs text-destructive">{errors.name.message}</p>
+          <p id="name-error" className="text-xs text-destructive">{errors.name.message}</p>
         )}
       </div>
 
@@ -93,11 +95,13 @@ export function RegisterForm() {
           type="email"
           autoComplete="email"
           placeholder="nama@email.com"
+          aria-invalid={!!errors.email}
+          aria-describedby={errors.email ? "reg-email-error" : undefined}
           {...register("email")}
           className="w-full rounded-[10px] border border-border bg-background px-3.5 py-2 text-sm text-foreground placeholder:text-muted-foreground/50 transition-all duration-150 focus:border-primary/50 focus:ring-2 focus:ring-primary/20 focus:outline-none"
         />
         {errors.email && (
-          <p className="text-xs text-destructive">{errors.email.message}</p>
+          <p id="reg-email-error" className="text-xs text-destructive">{errors.email.message}</p>
         )}
       </div>
 
@@ -113,11 +117,13 @@ export function RegisterForm() {
           type="password"
           autoComplete="new-password"
           placeholder="Minimal 6 karakter"
+          aria-invalid={!!errors.password}
+          aria-describedby={errors.password ? "reg-password-error" : undefined}
           {...register("password")}
           className="w-full rounded-[10px] border border-border bg-background px-3.5 py-2 text-sm text-foreground placeholder:text-muted-foreground/50 transition-all duration-150 focus:border-primary/50 focus:ring-2 focus:ring-primary/20 focus:outline-none"
         />
         {errors.password && (
-          <p className="text-xs text-destructive">
+          <p id="reg-password-error" className="text-xs text-destructive">
             {errors.password.message}
           </p>
         )}

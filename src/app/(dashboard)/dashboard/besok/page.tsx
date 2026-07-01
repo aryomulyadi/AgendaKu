@@ -1,16 +1,17 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { CalendarDays } from "lucide-react";
 import { toast } from "sonner";
-import { numToPriority, getTomorrowISO } from "@/lib/utils";
+import { cn, numToPriority, getTomorrowISO } from "@/lib/utils";
 import { TaskItem } from "@/components/task/task-item";
 import { TaskInput } from "@/components/task/task-input";
-import { useDateTodos, useCreateTodo, useToggleTodo, useUpdateTodo, useDeleteTodo } from "@/hooks/use-todos";
+import { useBesokTodos, useCreateTodo, useToggleTodo, useUpdateTodo, useDeleteTodo } from "@/hooks/use-todos";
 import { useCategories } from "@/hooks/use-categories";
 
 export default function BesokPage() {
-  const tomorrow = useMemo(() => getTomorrowISO(), []);
-  const { data: todos, isLoading, isError } = useDateTodos(tomorrow);
+  const { data: todos, isLoading, isError } = useBesokTodos();
   const { data: categories } = useCategories();
   const createMutation = useCreateTodo();
   const toggleMutation = useToggleTodo();
@@ -20,7 +21,7 @@ export default function BesokPage() {
 
   function handleCreate(title: string) {
     createMutation.mutate(
-      { title, priority: "MEDIUM", deadline: tomorrow, categoryId: selectedCategoryId },
+      { title, priority: "MEDIUM", deadline: getTomorrowISO(), categoryId: selectedCategoryId },
       { onError: () => toast.error("Gagal menambahkan agenda"), onSuccess: () => setSelectedCategoryId(null) },
     );
   }
@@ -65,26 +66,93 @@ export default function BesokPage() {
         </div>
       ) : (
         <div className="space-y-1">
-          {todos?.map((task) => (
-            <TaskItem
-              key={task.id}
-              id={task.id}
-              title={task.title}
-              done={task.done}
-              priority={task.priority}
-              deadline={task.deadline}
-              categoryColor={task.categoryColor}
-              categoryName={task.categoryName}
-              onToggle={handleToggle}
-              onUpdate={handleUpdate}
-              onDelete={handleDelete}
-            />
-          ))}
-          {todos?.length === 0 && (
-            <p className="py-4 text-center text-sm text-muted-foreground/60">
-              Belum ada agenda untuk besok
-            </p>
-          )}
+          {(() => {
+            const deadlineTasks = todos?.filter((t) => !t.carryOver) ?? [];
+            const carryTasks = todos?.filter((t) => t.carryOver) ?? [];
+
+            return (
+              <>
+                <AnimatePresence initial={false}>
+                  {deadlineTasks.map((task) => (
+                    <motion.div
+                      key={task.id}
+                      layout
+                      initial={{ opacity: 0, y: -6 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, x: -16 }}
+                      transition={{ duration: 0.15 }}
+                    >
+                      <TaskItem
+                        id={task.id}
+                        title={task.title}
+                        done={task.done}
+                        priority={task.priority}
+                        deadline={task.deadline}
+                        categoryColor={task.categoryColor}
+                        categoryName={task.categoryName}
+                        onToggle={handleToggle}
+                        onUpdate={handleUpdate}
+                        onDelete={handleDelete}
+                      />
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
+
+                {carryTasks.length > 0 && (
+                  <p className="pt-2 pb-0.5 text-[10px] font-medium text-muted-foreground/40 uppercase tracking-wide">
+                    Tertunda
+                  </p>
+                )}
+                <AnimatePresence initial={false}>
+                  {carryTasks.map((task) => (
+                    <motion.div
+                      key={task.id}
+                      layout
+                      initial={{ opacity: 0, y: -6 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, x: -16 }}
+                      transition={{ duration: 0.15 }}
+                    >
+                      <div
+                        className={cn(
+                          "flex items-center gap-3 rounded-[10px] border px-3.5 py-2",
+                          "border-amber-200/30 bg-amber-50/20 dark:border-amber-700/20 dark:bg-amber-900/10",
+                        )}
+                      >
+                        <button
+                          type="button"
+                          onClick={() => handleToggle(task.id)}
+                          className={cn(
+                            "size-4 shrink-0 rounded-full border-2 transition-all",
+                            task.done ? "border-success bg-success" : "border-muted-foreground/15",
+                          )}
+                        />
+                        <span
+                          className={cn(
+                            "flex-1 text-sm",
+                            task.done ? "text-muted-foreground/40 line-through" : "text-muted-foreground/70",
+                          )}
+                        >
+                          {task.title}
+                        </span>
+                      </div>
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
+
+                {todos?.length === 0 && (
+                  <div className="flex flex-col items-center gap-2 py-8">
+                    <div className="flex size-10 items-center justify-center rounded-full bg-muted/50 text-muted-foreground/30">
+                      <CalendarDays className="size-5" />
+                    </div>
+                    <p className="text-sm text-muted-foreground/60">
+                      Belum ada agenda untuk besok
+                    </p>
+                  </div>
+                )}
+              </>
+            );
+          })()}
         </div>
       )}
 

@@ -10,9 +10,7 @@ export function AuthCard({ title, description, children }: AuthCardProps) {
   return (
     <div className="w-full max-w-sm">
       <div className="mb-8 flex flex-col items-center gap-3">
-        <div className="flex size-10 items-center justify-center rounded-xl bg-primary text-lg font-bold text-primary-foreground shadow-xs">
-          K
-        </div>
+        <img src="/AgendaKu_logo2.png" alt="AgendaKu" width={36} height={36} className="rounded-md object-contain" />
         <h1 className="text-xl font-semibold tracking-tight text-foreground">
           {title}
         </h1>

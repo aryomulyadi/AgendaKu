@@ -4,8 +4,8 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   getTodayTodos,
   getTodayStats,
-  getFocusTask,
   getTomorrowTodos,
+  getBesokTodos,
   getCalendarTasks,
   getDateTodos,
   getAllTodos,
@@ -22,7 +22,6 @@ const keys = {
   all: ["todos"] as const,
   today: () => ["todos", "today"] as const,
   stats: () => ["todos", "stats"] as const,
-  focus: () => ["todos", "focus"] as const,
   tomorrow: () => ["todos", "tomorrow"] as const,
   calendar: (y: number, m: number) => ["todos", "calendar", y, m] as const,
   date: (d: string | null) => ["todos", "date", d] as const,
@@ -45,17 +44,17 @@ export function useTodayStats() {
   });
 }
 
-export function useFocusTask() {
-  return useQuery({
-    queryKey: keys.focus(),
-    queryFn: () => getFocusTask(),
-  });
-}
-
 export function useTomorrowTodos() {
   return useQuery({
     queryKey: keys.tomorrow(),
     queryFn: () => getTomorrowTodos(),
+  });
+}
+
+export function useBesokTodos() {
+  return useQuery({
+    queryKey: ["todos", "besok"],
+    queryFn: () => getBesokTodos(),
   });
 }
 
@@ -82,9 +81,11 @@ export function useCreateTodo() {
       client.invalidateQueries({ queryKey: ["todos", "today"] });
       client.invalidateQueries({ queryKey: ["todos", "stats"] });
       client.invalidateQueries({ queryKey: ["todos", "tomorrow"] });
+      client.invalidateQueries({ queryKey: ["todos", "besok"] });
       client.invalidateQueries({ queryKey: ["todos", "all"] });
       client.invalidateQueries({ queryKey: ["todos", "calendar"] });
       client.invalidateQueries({ queryKey: ["todos", "date"] });
+      client.invalidateQueries({ queryKey: ["todos", "completed"] });
     },
   });
 }
@@ -93,13 +94,15 @@ export function useToggleTodo() {
   const client = useQueryClient();
   return useMutation({
     mutationFn: (id: string) => toggleTodo(id),
-    onSettled: () => {
+    onSuccess: () => {
       client.invalidateQueries({ queryKey: ["todos", "today"] });
       client.invalidateQueries({ queryKey: ["todos", "stats"] });
       client.invalidateQueries({ queryKey: ["todos", "tomorrow"] });
+      client.invalidateQueries({ queryKey: ["todos", "besok"] });
       client.invalidateQueries({ queryKey: ["todos", "all"] });
       client.invalidateQueries({ queryKey: ["todos", "completed"] });
       client.invalidateQueries({ queryKey: ["todos", "date"] });
+      client.invalidateQueries({ queryKey: ["todos", "calendar"] });
     },
   });
 }
@@ -112,6 +115,7 @@ export function useUpdateTodo() {
       client.invalidateQueries({ queryKey: ["todos", "today"] });
       client.invalidateQueries({ queryKey: ["todos", "stats"] });
       client.invalidateQueries({ queryKey: ["todos", "tomorrow"] });
+      client.invalidateQueries({ queryKey: ["todos", "besok"] });
       client.invalidateQueries({ queryKey: ["todos", "all"] });
       client.invalidateQueries({ queryKey: ["todos", "calendar"] });
       client.invalidateQueries({ queryKey: ["todos", "date"] });

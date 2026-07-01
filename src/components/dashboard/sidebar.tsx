@@ -90,10 +90,10 @@ export function Sidebar() {
 
       <span className="lg:hidden">
         <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
-          <SheetTrigger render={<Button variant="ghost" size="icon" />}>
+          <SheetTrigger render={<Button variant="ghost" size="icon" aria-label="Buka menu navigasi" />}>
             <Menu className="size-5" />
           </SheetTrigger>
-          <SheetContent side="left" className="w-56 p-0">
+          <SheetContent side="left" className="w-56 p-0" showCloseButton={false}>
             <div className="flex h-14 items-center gap-2.5 border-b border-border px-5">
               <img src="/AgendaKu_logo2.png" alt="AgendaKu" width={28} height={28} className="shrink-0 rounded-md object-contain" />
               <span className="text-base font-semibold tracking-tight text-foreground">

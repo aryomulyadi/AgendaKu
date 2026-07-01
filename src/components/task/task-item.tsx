@@ -135,16 +135,17 @@ export function TaskItem({
       )}
       <div className="flex flex-1">
         {showBar && (
-          <button
-            type="button"
-            onClick={handlePriorityClick}
-            className={cn(
-              "w-[3px] shrink-0 cursor-pointer transition-colors duration-150",
-              priority === 3 && "bg-primary hover:bg-primary/80",
-              priority === 2 && "bg-[#F7D87F] hover:bg-[#F7D87F]/80",
-            )}
-            title={priority === 3 ? "Prioritas Tinggi" : "Prioritas Sedang"}
-          />
+            <button
+              type="button"
+              onClick={handlePriorityClick}
+              className={cn(
+                "w-[3px] shrink-0 cursor-pointer transition-colors duration-150",
+                priority === 3 && "bg-primary hover:bg-primary/80",
+                priority === 2 && "bg-[#F7D87F] hover:bg-[#F7D87F]/80",
+              )}
+              title={priority === 3 ? "Prioritas Tinggi" : "Prioritas Sedang"}
+              aria-label={priority === 3 ? "Prioritas Tinggi, klik untuk ubah" : "Prioritas Sedang, klik untuk ubah"}
+            />
         )}
         <div className="group flex flex-1 flex-col">
           <div className="flex items-center gap-2.5 px-3.5 py-2.5">
@@ -214,6 +215,7 @@ export function TaskItem({
               <button
                 type="button"
                 onClick={() => onDelete(id)}
+                aria-label="Hapus agenda"
                 className="shrink-0 opacity-0 transition-all duration-150 group-hover:opacity-100 hover:text-destructive"
               >
                 <Trash2 className="size-3.5 text-muted-foreground/40 hover:text-destructive" />

@@ -4,13 +4,23 @@ import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { Loader2, User, Lock, Eye, EyeOff } from "lucide-react";
 import { updateProfileSchema, changePasswordSchema } from "@/lib/schemas/settings";
-import { getProfile, updateProfile, changePassword } from "@/lib/actions/settings";
+import { updateProfile, changePassword } from "@/lib/actions/settings";
+import { useProfile } from "@/hooks/use-profile";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function SettingsPage() {
-  const [profile, setProfile] = useState<{ name: string; email: string } | null>(null);
+  const { data: profile, isLoading: loadingProfile } = useProfile();
+  const queryClient = useQueryClient();
   const [profileName, setProfileName] = useState("");
   const [profileEmail, setProfileEmail] = useState("");
   const [profilePassword, setProfilePassword] = useState("");
+
+  useEffect(() => {
+    if (!profile) return;
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setProfileName(profile.name ?? "");
+    setProfileEmail(profile.email);
+  }, [profile]);
   const [profilePending, setProfilePending] = useState(false);
 
   const [currPw, setCurrPw] = useState("");
@@ -21,21 +31,6 @@ export default function SettingsPage() {
   const [showCurr, setShowCurr] = useState(false);
   const [showNew, setShowNew] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
-
-  const [loadingProfile, setLoadingProfile] = useState(true);
-
-  useEffect(() => {
-    getProfile()
-      .then((user) => {
-        if (user) {
-          setProfile({ name: user.name ?? "", email: user.email });
-          setProfileName(user.name ?? "");
-          setProfileEmail(user.email);
-        }
-      })
-      .catch(() => toast.error("Gagal memuat profil"))
-      .finally(() => setLoadingProfile(false));
-  }, []);
 
   async function handleUpdateProfile(e: React.FormEvent) {
     e.preventDefault();
@@ -61,6 +56,7 @@ export default function SettingsPage() {
 
     if ("error" in res) { toast.error(res.error); return; }
     toast.success("Profil diperbarui");
+    queryClient.invalidateQueries({ queryKey: ["profile"] });
     setProfilePassword("");
   }
 
@@ -154,7 +150,7 @@ export default function SettingsPage() {
                   placeholder="Masukkan password"
                   className="w-full rounded-[10px] border border-border/60 bg-surface px-3.5 py-2 pr-9 text-sm text-foreground outline-none transition-all duration-150 focus:border-primary/40 focus:ring-2 focus:ring-primary/20"
                 />
-                <button type="button" onClick={() => setShowProfilePw((s) => !s)} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground/50 hover:text-foreground">
+                <button type="button" onClick={() => setShowProfilePw((s) => !s)} aria-label={showProfilePw ? "Sembunyikan password" : "Tampilkan password"} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground/50 hover:text-foreground">
                   {showProfilePw ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
                 </button>
               </div>
@@ -200,7 +196,7 @@ export default function SettingsPage() {
                   placeholder={field.id === "curr" ? "Password saat ini" : field.id === "new" ? "Minimal 6 karakter" : "Ketik ulang password baru"}
                   className="w-full rounded-[10px] border border-border/60 bg-surface px-3.5 py-2 pr-9 text-sm text-foreground outline-none transition-all duration-150 focus:border-primary/40 focus:ring-2 focus:ring-primary/20"
                 />
-                <button type="button" onClick={() => field.setShow((s) => !s)} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground/50 hover:text-foreground">
+                <button type="button" onClick={() => field.setShow((s) => !s)} aria-label={field.show ? "Sembunyikan password" : "Tampilkan password"} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground/50 hover:text-foreground">
                   {field.show ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
                 </button>
               </div>

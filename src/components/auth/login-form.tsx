@@ -66,11 +66,13 @@ export function LoginForm() {
           type="email"
           autoComplete="email"
           placeholder="nama@email.com"
+          aria-invalid={!!errors.email}
+          aria-describedby={errors.email ? "email-error" : undefined}
           {...register("email")}
           className="w-full rounded-[10px] border border-border bg-background px-3.5 py-2 text-sm text-foreground placeholder:text-muted-foreground/50 transition-all duration-150 focus:border-primary/50 focus:ring-2 focus:ring-primary/20 focus:outline-none"
         />
         {errors.email && (
-          <p className="text-xs text-destructive">{errors.email.message}</p>
+          <p id="email-error" className="text-xs text-destructive">{errors.email.message}</p>
         )}
       </div>
 
@@ -86,11 +88,13 @@ export function LoginForm() {
           type="password"
           autoComplete="current-password"
           placeholder="Minimal 6 karakter"
+          aria-invalid={!!errors.password}
+          aria-describedby={errors.password ? "password-error" : undefined}
           {...register("password")}
           className="w-full rounded-[10px] border border-border bg-background px-3.5 py-2 text-sm text-foreground placeholder:text-muted-foreground/50 transition-all duration-150 focus:border-primary/50 focus:ring-2 focus:ring-primary/20 focus:outline-none"
         />
         {errors.password && (
-          <p className="text-xs text-destructive">
+          <p id="password-error" className="text-xs text-destructive">
             {errors.password.message}
           </p>
         )}
