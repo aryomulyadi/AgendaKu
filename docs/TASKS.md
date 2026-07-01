@@ -288,7 +288,11 @@
 - [x] Migrasi PostgreSQL — `schema.prisma`: `provider = "sqlite"` → `"postgresql"`
 - [x] Update Prisma adapter — `PrismaLibSql` → `PrismaPg` di `src/lib/prisma.ts`
 - [x] Update `.env.example` — `DATABASE_URL` PostgreSQL format + SQLite comment
+- [x] Koneksi ke Neon (PostgreSQL cloud, IPv4 compatible) — update `.env` dengan connection string
+- [x] Hapus migration SQLite lama + migration_lock.toml ke `provider = "postgresql"`
+- [x] `prisma migrate dev --name init` — migration PostgreSQL berhasil (tabel User, Category, Todo)
 - [x] Vercel config — `vercel.json` (buildCommand: `prisma generate && next build`)
 - [x] Dokumentasi deploy — `docs/DEPLOY.md`
+- [x] Commit & push ke GitHub
 - [x] Build & lint — **0 errors, 0 warnings**
 
