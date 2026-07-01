@@ -55,6 +55,8 @@ export function RegisterForm() {
       if (!signInResult?.error) {
         router.push("/dashboard");
         router.refresh();
+      } else {
+        toast.error("Akun berhasil dibuat, tetapi gagal login otomatis. Silakan login manual.");
       }
     });
   }
@@ -132,7 +134,7 @@ export function RegisterForm() {
       <button
         type="submit"
         disabled={isPending}
-        className="flex w-full items-center justify-center gap-2 rounded-[10px] bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground shadow-xs transition-all duration-150 hover:bg-[#D0311E] active:translate-y-px disabled:pointer-events-none disabled:opacity-60"
+        className="flex w-full items-center justify-center gap-2 rounded-[10px] bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground shadow-xs transition-all duration-150 hover:bg-primary/90 active:translate-y-px disabled:pointer-events-none disabled:opacity-60"
       >
         {isPending && <Loader2 className="size-4 animate-spin" />}
         {isPending ? "Memproses..." : "Daftar"}

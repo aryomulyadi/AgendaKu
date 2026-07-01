@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { Trash2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 
 interface TaskItemProps {
   id: string;
@@ -20,7 +21,7 @@ interface TaskItemProps {
 }
 
 function nextPriority(p: 1 | 2 | 3): 1 | 2 | 3 {
-  return p === 1 ? 3 : p === 3 ? 2 : 1;
+  return p === 1 ? 2 : p === 2 ? 3 : 1;
 }
 
 function extractDate(iso: string | null | undefined): string {
@@ -30,7 +31,7 @@ function extractDate(iso: string | null | undefined): string {
 
 function extractTime(iso: string | null | undefined): string {
   if (!iso) return "";
-  if (iso.endsWith("T00:00:00.000Z") || iso.endsWith("T00:00:00Z")) return "";
+  if (iso.endsWith("T00:00:00.000")) return "";
   const d = new Date(iso);
   return `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
 }
@@ -49,7 +50,7 @@ function formatDate(iso: string) {
   else if (+target === +tomorrow) datePart = "Besok";
   else datePart = d.toLocaleDateString("id-ID", { day: "numeric", month: "short" });
 
-  if (!iso.endsWith("T00:00:00.000Z") && !iso.endsWith("T00:00:00Z")) {
+  if (!iso.endsWith("T00:00:00.000")) {
     const time = d.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" });
     return `${datePart} ${time}`;
   }
@@ -85,14 +86,19 @@ export function TaskItem({
   }, [editing]);
 
   function handleDoubleClick() {
-    if (done) return;
+    if (done || !onUpdate) return;
     setEditValue(title);
     setEditing(true);
   }
 
   function saveEdit() {
     const trimmed = editValue.trim();
-    if (trimmed && trimmed !== title) {
+    if (!trimmed) {
+      toast.error("Judul tidak boleh kosong");
+      setEditing(false);
+      return;
+    }
+    if (trimmed !== title) {
       onUpdate?.(id, { title: trimmed });
     }
     setEditing(false);
@@ -160,6 +166,8 @@ export function TaskItem({
             )}
             <button
               type="button"
+              role="checkbox"
+              aria-checked={done}
               onClick={() => onToggle?.(id)}
               className={cn(
                 "flex size-5 shrink-0 items-center justify-center rounded-full border-2 transition-all duration-150 active:scale-90",

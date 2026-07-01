@@ -10,7 +10,7 @@ export function Navbar() {
       <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-5 sm:px-8">
         <Link href="/" className="flex items-center gap-2.5 transition-opacity hover:opacity-80">
           <Image src="/AgendaKu_logo2.svg" alt="AgendaKu" width={28} height={28} className="shrink-0 rounded-md object-contain" unoptimized />
-          <span className="text-base font-semibold tracking-tight text-foreground">
+          <span className="hidden text-base font-semibold tracking-tight text-foreground sm:inline">
             AgendaKu
           </span>
         </Link>
@@ -19,7 +19,7 @@ export function Navbar() {
           <ThemeToggle />
           <Link
             href="/login"
-            className="hidden h-9 items-center text-sm font-medium text-muted-foreground transition-colors hover:text-foreground sm:inline-flex"
+            className="inline-flex h-9 items-center text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
           >
             Masuk
           </Link>

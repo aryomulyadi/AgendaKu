@@ -36,16 +36,18 @@ export function LoginForm() {
         redirect: false,
       });
 
-      if (result?.error) {
+      if (!result || result.error) {
         toast.error("Email atau password salah");
         return;
       }
 
       toast.success("Berhasil masuk");
-      const callbackUrl = searchParams.get("callbackUrl") || "/dashboard";
+      const rawUrl = searchParams.get("callbackUrl") || "/dashboard";
+      const callbackUrl = rawUrl.startsWith("/") ? rawUrl : "/dashboard";
       router.push(callbackUrl);
       router.refresh();
-    } catch {
+    } catch (error) {
+      if (process.env.NODE_ENV !== "production") console.error("Login error:", error);
       toast.error("Terjadi kesalahan. Silakan coba lagi.");
     } finally {
       setIsPending(false);
@@ -113,7 +115,7 @@ export function LoginForm() {
       <button
         type="submit"
         disabled={isPending}
-        className="flex w-full items-center justify-center gap-2 rounded-[10px] bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground shadow-xs transition-all duration-150 hover:bg-[#D0311E] active:translate-y-px disabled:pointer-events-none disabled:opacity-60"
+        className="flex w-full items-center justify-center gap-2 rounded-[10px] bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground shadow-xs transition-all duration-150 hover:bg-primary/90 active:translate-y-px disabled:pointer-events-none disabled:opacity-60"
       >
         {isPending && <Loader2 className="size-4 animate-spin" />}
         {isPending ? "Memproses..." : "Masuk"}

@@ -15,6 +15,7 @@ import {
   Settings,
   LogOut,
   Menu,
+  CheckCheck,
 } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
@@ -25,6 +26,7 @@ const navItems = [
   { label: "Hari Ini", href: "/dashboard/hari-ini", icon: Sun },
   { label: "Besok", href: "/dashboard/besok", icon: CalendarDays },
   { label: "Semua Agenda", href: "/dashboard/semua-tugas", icon: ListTodo },
+  { label: "Selesai", href: "/dashboard/selesai", icon: CheckCheck },
   { label: "Kategori", href: "/dashboard/kategori", icon: Tags },
   { label: "Kalender", href: "/dashboard/kalender", icon: Calendar },
   { label: "Pengaturan", href: "/dashboard/pengaturan", icon: Settings },

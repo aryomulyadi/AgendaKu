@@ -57,7 +57,8 @@ export default function KalenderPage() {
   }
 
   function isToday(day: number) {
-    return day === today.getDate() && month === today.getMonth() && year === today.getFullYear();
+    const now = new Date();
+    return day === now.getDate() && month === now.getMonth() && year === now.getFullYear();
   }
 
   function isSelected(day: number) {

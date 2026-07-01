@@ -1,12 +1,18 @@
 import type { NextAuthConfig } from "next-auth";
 
 function base64url(str: string) {
-  return btoa(str).replace(/=/g, "").replace(/\+/g, "-").replace(/\//g, "_");
+  const bytes = new TextEncoder().encode(str);
+  let binary = "";
+  for (const byte of bytes) binary += String.fromCharCode(byte);
+  return btoa(binary).replace(/=/g, "").replace(/\+/g, "-").replace(/\//g, "_");
 }
 
 function fromBase64url(str: string) {
   const padded = str.replace(/-/g, "+").replace(/_/g, "/") + "=".repeat((4 - (str.length % 4)) % 4);
-  return atob(padded);
+  const binary = atob(padded);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return new TextDecoder().decode(bytes);
 }
 
 async function signHmac(secret: string, data: string): Promise<string> {
@@ -35,7 +41,7 @@ export const authConfig: NextAuthConfig = {
   jwt: {
     async encode({ token, secret, maxAge }) {
       const maxAgeSec = maxAge ?? 30 * 24 * 60 * 60;
-      const rememberMe = (token as Record<string, unknown>).rememberMe;
+      const rememberMe = (token as { rememberMe?: boolean }).rememberMe;
       const exp =
         rememberMe === false
           ? Math.floor(Date.now() / 1000) + 86400
@@ -69,7 +75,7 @@ export const authConfig: NextAuthConfig = {
 
       const payload = JSON.parse(fromBase64url(payloadEncoded));
 
-      if (payload.exp && Date.now() / 1000 > payload.exp) return null;
+      if (typeof payload.exp === "number" && Date.now() / 1000 > payload.exp) return null;
 
       return payload;
     },
@@ -78,7 +84,7 @@ export const authConfig: NextAuthConfig = {
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
-        token.rememberMe = (user as unknown as Record<string, unknown>).rememberMe;
+        token.rememberMe = (user as { rememberMe?: boolean }).rememberMe;
       }
       return token;
     },

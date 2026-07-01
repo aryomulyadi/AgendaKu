@@ -6,7 +6,7 @@ export function Footer() {
           AgendaKu
         </span>
         <span className="text-xs text-muted-foreground/60">
-          &copy; 2026
+          &copy; {new Date().getFullYear()}
         </span>
       </div>
     </footer>

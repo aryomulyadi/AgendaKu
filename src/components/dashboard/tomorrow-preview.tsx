@@ -74,53 +74,63 @@ export function TomorrowPreview() {
         </div>
       ) : (
         <div className="space-y-1">
-          {tasks?.map((task) => (
-            <div key={task.id}>
-              {task.carryOver && (
-                <p className="mb-0.5 text-[10px] font-medium text-muted-foreground/40 uppercase tracking-wide">
-                  Tertunda
-                </p>
-              )}
-              {task.carryOver ? (
-                <div
-                  className={cn(
-                    "flex items-center gap-3 rounded-[10px] border px-3.5 py-2",
-                    "border-amber-200/30 bg-amber-50/20 dark:border-amber-700/20 dark:bg-amber-900/10",
-                  )}
-                >
-                  <button
-                    type="button"
-                    onClick={() => handleToggle(task.id)}
+          {(() => {
+            const deadlineTasks = tasks?.filter((t) => !t.carryOver) ?? [];
+            const carryTasks = tasks?.filter((t) => t.carryOver) ?? [];
+
+            return (
+              <>
+                {deadlineTasks.map((task) => (
+                  <div key={task.id}>
+                    <TaskItem
+                      id={task.id}
+                      title={task.title}
+                      done={task.done}
+                      priority={task.priority}
+                      deadline={task.deadline}
+                      categoryColor={task.categoryColor}
+                      categoryName={task.categoryName}
+                      onToggle={handleToggle}
+                      onDelete={handleDelete}
+                      onUpdate={handleUpdate}
+                    />
+                  </div>
+                ))}
+
+                {carryTasks.length > 0 && (
+                  <p className="pt-2 pb-0.5 text-[10px] font-medium text-muted-foreground/40 uppercase tracking-wide">
+                    Tertunda
+                  </p>
+                )}
+                {carryTasks.map((task) => (
+                  <div
+                    key={task.id}
                     className={cn(
-                      "size-4 shrink-0 rounded-full border-2 transition-all",
-                      task.done ? "border-success bg-success" : "border-muted-foreground/15",
-                    )}
-                  />
-                  <span
-                    className={cn(
-                      "flex-1 text-sm",
-                      task.done ? "text-muted-foreground/40 line-through" : "text-muted-foreground/70",
+                      "flex items-center gap-3 rounded-[10px] border px-3.5 py-2",
+                      "border-amber-200/30 bg-amber-50/20 dark:border-amber-700/20 dark:bg-amber-900/10",
                     )}
                   >
-                    {task.title}
-                  </span>
-                </div>
-              ) : (
-                <TaskItem
-                  id={task.id}
-                  title={task.title}
-                  done={task.done}
-                  priority={task.priority}
-                  deadline={task.deadline}
-                  categoryColor={task.categoryColor}
-                  categoryName={task.categoryName}
-                  onToggle={handleToggle}
-                  onDelete={handleDelete}
-                  onUpdate={handleUpdate}
-                />
-              )}
-            </div>
-          ))}
+                    <button
+                      type="button"
+                      onClick={() => handleToggle(task.id)}
+                      className={cn(
+                        "size-4 shrink-0 rounded-full border-2 transition-all",
+                        task.done ? "border-success bg-success" : "border-muted-foreground/15",
+                      )}
+                    />
+                    <span
+                      className={cn(
+                        "flex-1 text-sm",
+                        task.done ? "text-muted-foreground/40 line-through" : "text-muted-foreground/70",
+                      )}
+                    >
+                      {task.title}
+                    </span>
+                  </div>
+                ))}
+              </>
+            );
+          })()}
           {tasks?.length === 0 && (
             <div className="flex flex-col items-center gap-2 py-6">
               <div className="flex size-8 items-center justify-center rounded-full bg-muted/30 text-muted-foreground/30">

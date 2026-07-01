@@ -2,6 +2,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/auth";
+import { toLocalISOString } from "@/lib/utils";
 import {
   createTodoSchema,
   updateTodoSchema,
@@ -45,8 +46,8 @@ function mapTodo(t: RawTodo) {
     title: t.title,
     done: t.completed,
     priority: (t.priority === "HIGH" ? 3 : t.priority === "MEDIUM" ? 2 : 1) as 1 | 2 | 3,
-    deadline: t.deadline?.toISOString() ?? null,
-    createdAt: t.createdAt.toISOString(),
+    deadline: t.deadline ? toLocalISOString(t.deadline) : null,
+    createdAt: toLocalISOString(t.createdAt),
     categoryId: t.categoryId,
     categoryName: t.category?.name ?? null,
     categoryColor: t.category?.color ?? null,
@@ -55,7 +56,7 @@ function mapTodo(t: RawTodo) {
 
 const todayOrNoDeadline = (start: Date, end: Date) => [
   { deadline: { gte: start, lte: end } },
-  { deadline: null, createdAt: { gte: start } },
+  { deadline: null, completed: false },
 ];
 
 export async function getTodayTodos() {
@@ -85,15 +86,14 @@ export async function getCalendarTasks(year: number, month: number) {
   const end = new Date(year, month + 1, 0, 23, 59, 59, 999);
 
   const todos = await prisma.todo.findMany({
-    where: { userId: session.user.id, OR: [{ deadline: { gte: start, lte: end } }, { createdAt: { gte: start, lte: end } }] },
-    select: { deadline: true, createdAt: true },
+    where: { userId: session.user.id, deadline: { gte: start, lte: end } },
+    select: { deadline: true },
   });
 
   const counts: Record<string, number> = {};
   for (const t of todos) {
-    const date = t.deadline
-      ? `${t.deadline.getFullYear()}-${String(t.deadline.getMonth() + 1).padStart(2, "0")}-${String(t.deadline.getDate()).padStart(2, "0")}`
-      : `${t.createdAt.getFullYear()}-${String(t.createdAt.getMonth() + 1).padStart(2, "0")}-${String(t.createdAt.getDate()).padStart(2, "0")}`;
+    if (!t.deadline) continue;
+    const date = `${t.deadline.getFullYear()}-${String(t.deadline.getMonth() + 1).padStart(2, "0")}-${String(t.deadline.getDate()).padStart(2, "0")}`;
     counts[date] = (counts[date] ?? 0) + 1;
   }
 
@@ -121,19 +121,17 @@ export async function getTomorrowTodos() {
   if (!session?.user?.id) return [];
 
   const { start, end } = getTomorrowRange();
-  const { start: todayStart } = getTodayRange();
 
   const todos = await prisma.todo.findMany({
     where: {
       userId: session.user.id,
       OR: [
         { deadline: { gte: start, lte: end } },
-        { completed: false, deadline: null, createdAt: { gte: todayStart } },
+        { completed: false, deadline: null },
       ],
     },
     include: { category: { select: { id: true, name: true, color: true } } },
     orderBy: [{ completed: "asc" }, { priority: "desc" }, { createdAt: "desc" }],
-    take: 10,
   });
 
   const deadlineTasks = todos.filter((t) => t.deadline && t.deadline >= start && t.deadline <= end);
@@ -150,14 +148,13 @@ export async function getBesokTodos() {
   if (!session?.user?.id) return [];
 
   const { start, end } = getTomorrowRange();
-  const { start: todayStart } = getTodayRange();
 
   const todos = await prisma.todo.findMany({
     where: {
       userId: session.user.id,
       OR: [
         { deadline: { gte: start, lte: end } },
-        { completed: false, deadline: null, createdAt: { gte: todayStart } },
+        { completed: false, deadline: null },
       ],
     },
     include: { category: { select: { id: true, name: true, color: true } } },
@@ -310,7 +307,7 @@ export async function searchTodos(query: string) {
   const todos = await prisma.todo.findMany({
     where: {
       userId: session.user.id,
-      title: { contains: query },
+      title: { contains: query, mode: "insensitive" },
     },
     include: { category: { select: { id: true, name: true, color: true } } },
     orderBy: { createdAt: "desc" },

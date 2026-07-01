@@ -27,12 +27,18 @@ export async function createCategory(data: CreateCategoryInput) {
   const validated = createCategorySchema.safeParse(data);
   if (!validated.success) throw new Error(validated.error.issues[0].message);
 
-  const category = await prisma.category.create({
-    data: { ...validated.data, userId: session.user.id },
-    include: { _count: { select: { todos: true } } },
-  });
-
-  return category;
+  try {
+    const category = await prisma.category.create({
+      data: { ...validated.data, userId: session.user.id },
+      include: { _count: { select: { todos: true } } },
+    });
+    return category;
+  } catch (e) {
+    if ((e as { code?: string })?.code === "P2002") {
+      throw new Error("Nama kategori sudah digunakan");
+    }
+    throw e;
+  }
 }
 
 export async function updateCategory(id: string, data: UpdateCategoryInput) {
@@ -45,11 +51,18 @@ export async function updateCategory(id: string, data: UpdateCategoryInput) {
   const category = await prisma.category.findUnique({ where: { id } });
   if (!category || category.userId !== session.user.id) throw new Error("Not found");
 
-  return prisma.category.update({
-    where: { id },
-    data: validated.data,
-    include: { _count: { select: { todos: true } } },
-  });
+  try {
+    return prisma.category.update({
+      where: { id },
+      data: validated.data,
+      include: { _count: { select: { todos: true } } },
+    });
+  } catch (e) {
+    if ((e as { code?: string })?.code === "P2002") {
+      throw new Error("Nama kategori sudah digunakan");
+    }
+    throw e;
+  }
 }
 
 export async function deleteCategory(id: string) {

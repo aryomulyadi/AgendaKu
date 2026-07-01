@@ -36,7 +36,7 @@ export default function CategoriesPage() {
       { name: trimmed, color: newColor },
       {
         onSuccess: () => { setNewName(""); setNewColor("#2563EB"); toast.success("Kategori dibuat"); },
-        onError: () => toast.error("Gagal membuat kategori"),
+        onError: (err) => toast.error(err instanceof Error ? err.message : "Gagal membuat kategori"),
       },
     );
   }
@@ -53,7 +53,7 @@ export default function CategoriesPage() {
       { id, data: { name: trimmed } },
       {
         onSuccess: () => { setEditingId(null); toast.success("Kategori diperbarui"); },
-        onError: () => toast.error("Gagal memperbarui kategori"),
+        onError: (err) => toast.error(err instanceof Error ? err.message : "Gagal memperbarui kategori"),
       },
     );
   }

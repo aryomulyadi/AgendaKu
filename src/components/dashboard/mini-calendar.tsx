@@ -77,13 +77,13 @@ export function MiniCalendar({ selectedDate, onDateSelect }: MiniCalendarProps) 
   return (
     <div className="rounded-[14px] border border-border/60 bg-surface p-3">
       <div className="mb-2.5 flex items-center justify-between">
-        <button onClick={prevMonth} className="flex size-6 items-center justify-center rounded-md transition-colors hover:bg-muted/50">
+        <button onClick={prevMonth} aria-label="Bulan sebelumnya" className="flex size-6 items-center justify-center rounded-md transition-colors hover:bg-muted/50">
           <ChevronLeft className="size-3.5 text-muted-foreground" />
         </button>
         <span className="text-xs font-medium text-foreground">
           {monthNames[currentMonth]} {currentYear}
         </span>
-        <button onClick={nextMonth} className="flex size-6 items-center justify-center rounded-md transition-colors hover:bg-muted/50">
+        <button onClick={nextMonth} aria-label="Bulan berikutnya" className="flex size-6 items-center justify-center rounded-md transition-colors hover:bg-muted/50">
           <ChevronRight className="size-3.5 text-muted-foreground" />
         </button>
       </div>
@@ -109,7 +109,7 @@ export function MiniCalendar({ selectedDate, onDateSelect }: MiniCalendarProps) 
               day !== null && isToday(day) && !isSelected(day) && "bg-primary font-semibold text-primary-foreground",
               day !== null && isSelected(day) && "ring-2 ring-primary ring-offset-1 ring-offset-surface bg-primary/10 font-semibold text-primary",
               day !== null && !isToday(day) && !isSelected(day) && isCurrentMonth(day, idx) && "cursor-pointer text-foreground hover:bg-muted/50",
-              day !== null && !isCurrentMonth(day, idx) && "text-muted-foreground/25",
+              day !== null && !isCurrentMonth(day, idx) && "pointer-events-none text-muted-foreground/25",
             )}
           >
             {day ?? ""}

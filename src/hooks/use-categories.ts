@@ -17,7 +17,10 @@ export function useCreateCategory() {
   const client = useQueryClient();
   return useMutation({
     mutationFn: (data: CreateCategoryInput) => createCategory(data),
-    onSuccess: () => client.invalidateQueries({ queryKey: keys.all }),
+    onSuccess: () => {
+      client.invalidateQueries({ queryKey: keys.all });
+      client.invalidateQueries({ queryKey: ["todos"] });
+    },
   });
 }
 
@@ -25,7 +28,10 @@ export function useUpdateCategory() {
   const client = useQueryClient();
   return useMutation({
     mutationFn: ({ id, data }: { id: string; data: UpdateCategoryInput }) => updateCategory(id, data),
-    onSuccess: () => client.invalidateQueries({ queryKey: keys.all }),
+    onSuccess: () => {
+      client.invalidateQueries({ queryKey: keys.all });
+      client.invalidateQueries({ queryKey: ["todos"] });
+    },
   });
 }
 
@@ -33,6 +39,9 @@ export function useDeleteCategory() {
   const client = useQueryClient();
   return useMutation({
     mutationFn: (id: string) => deleteCategory(id),
-    onSuccess: () => client.invalidateQueries({ queryKey: keys.all }),
+    onSuccess: () => {
+      client.invalidateQueries({ queryKey: keys.all });
+      client.invalidateQueries({ queryKey: ["todos"] });
+    },
   });
 }

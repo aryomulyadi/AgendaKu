@@ -78,14 +78,7 @@ export function useCreateTodo() {
   return useMutation({
     mutationFn: (data: CreateTodoInput) => createTodo(data),
     onSuccess: () => {
-      client.invalidateQueries({ queryKey: ["todos", "today"] });
-      client.invalidateQueries({ queryKey: ["todos", "stats"] });
-      client.invalidateQueries({ queryKey: ["todos", "tomorrow"] });
-      client.invalidateQueries({ queryKey: ["todos", "besok"] });
-      client.invalidateQueries({ queryKey: ["todos", "all"] });
-      client.invalidateQueries({ queryKey: ["todos", "calendar"] });
-      client.invalidateQueries({ queryKey: ["todos", "date"] });
-      client.invalidateQueries({ queryKey: ["todos", "completed"] });
+      client.invalidateQueries({ queryKey: ["todos"] });
     },
   });
 }
@@ -95,14 +88,7 @@ export function useToggleTodo() {
   return useMutation({
     mutationFn: (id: string) => toggleTodo(id),
     onSuccess: () => {
-      client.invalidateQueries({ queryKey: ["todos", "today"] });
-      client.invalidateQueries({ queryKey: ["todos", "stats"] });
-      client.invalidateQueries({ queryKey: ["todos", "tomorrow"] });
-      client.invalidateQueries({ queryKey: ["todos", "besok"] });
-      client.invalidateQueries({ queryKey: ["todos", "all"] });
-      client.invalidateQueries({ queryKey: ["todos", "completed"] });
-      client.invalidateQueries({ queryKey: ["todos", "date"] });
-      client.invalidateQueries({ queryKey: ["todos", "calendar"] });
+      client.invalidateQueries({ queryKey: ["todos"] });
     },
   });
 }
@@ -112,14 +98,7 @@ export function useUpdateTodo() {
   return useMutation({
     mutationFn: ({ id, data }: { id: string; data: UpdateTodoInput }) => updateTodo(id, data),
     onSuccess: () => {
-      client.invalidateQueries({ queryKey: ["todos", "today"] });
-      client.invalidateQueries({ queryKey: ["todos", "stats"] });
-      client.invalidateQueries({ queryKey: ["todos", "tomorrow"] });
-      client.invalidateQueries({ queryKey: ["todos", "besok"] });
-      client.invalidateQueries({ queryKey: ["todos", "all"] });
-      client.invalidateQueries({ queryKey: ["todos", "calendar"] });
-      client.invalidateQueries({ queryKey: ["todos", "date"] });
-      client.invalidateQueries({ queryKey: ["todos", "completed"] });
+      client.invalidateQueries({ queryKey: ["todos"] });
     },
   });
 }
@@ -151,5 +130,6 @@ export function useSearchTodos(query: string) {
     queryKey: keys.search(query),
     queryFn: () => searchTodos(query),
     enabled: query.length >= 2,
+    staleTime: 0,
   });
 }
