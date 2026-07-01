@@ -273,6 +273,22 @@
 
 ---
 
-- [ ] Setup PostgreSQL (future)
-- [ ] Deploy (future)
+---
+
+## Phase 18 — Final Polish
+
+- [x] 404 page — buat `app/not-found.tsx` (simple layout + link ke dashboard)
+- [x] Fix 4 img warnings — revert ke `<img>` + `eslint-disable-next-line` (karena PNG tidak kompatibel dengan next/image)
+- [x] Build & lint — **0 errors, 0 warnings** (img warnings resolved dengan next/Image)
+
+---
+
+## Phase 19 — Deployment Preparation
+
+- [x] Migrasi PostgreSQL — `schema.prisma`: `provider = "sqlite"` → `"postgresql"`
+- [x] Update Prisma adapter — `PrismaLibSql` → `PrismaPg` di `src/lib/prisma.ts`
+- [x] Update `.env.example` — `DATABASE_URL` PostgreSQL format + SQLite comment
+- [x] Vercel config — `vercel.json` (buildCommand: `prisma generate && next build`)
+- [x] Dokumentasi deploy — `docs/DEPLOY.md`
+- [x] Build & lint — **0 errors, 0 warnings**
 

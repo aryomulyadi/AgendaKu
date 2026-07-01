@@ -80,6 +80,7 @@ export function Sidebar() {
     <>
       <aside className="fixed inset-y-0 left-0 z-30 hidden w-56 flex-col border-r border-border bg-card lg:flex">
         <div className="flex h-14 items-center gap-2.5 border-b border-border px-5">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/AgendaKu_logo2.png" alt="AgendaKu" width={28} height={28} className="shrink-0 rounded-md object-contain" />
           <span className="text-base font-semibold tracking-tight text-foreground">
             AgendaKu
@@ -95,6 +96,7 @@ export function Sidebar() {
           </SheetTrigger>
           <SheetContent side="left" className="w-56 p-0" showCloseButton={false}>
             <div className="flex h-14 items-center gap-2.5 border-b border-border px-5">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src="/AgendaKu_logo2.png" alt="AgendaKu" width={28} height={28} className="shrink-0 rounded-md object-contain" />
               <span className="text-base font-semibold tracking-tight text-foreground">
                 AgendaKu
