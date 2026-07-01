@@ -278,7 +278,8 @@
 ## Phase 18 — Final Polish
 
 - [x] 404 page — buat `app/not-found.tsx` (simple layout + link ke dashboard)
-- [x] Fix 4 img warnings — revert ke `<img>` + `eslint-disable-next-line` (karena PNG tidak kompatibel dengan next/image)
+- [x] Fix 4 img warnings — revert ke `<img>` + `eslint-disable-next-line` (PNG tidak kompatibel next/image)
+- [x] Optimasi logo — ganti PNG (1MB) → SVG (51KB) dengan `<Image unoptimized>` — 0 lint warnings
 - [x] Build & lint — **0 errors, 0 warnings** (img warnings resolved dengan next/Image)
 
 ---
@@ -294,5 +295,30 @@
 - [x] Vercel config — `vercel.json` (buildCommand: `prisma generate && next build`)
 - [x] Dokumentasi deploy — `docs/DEPLOY.md`
 - [x] Commit & push ke GitHub
+- [x] Build & lint — **0 errors, 0 warnings**
+
+---
+
+## Phase 21 — Production Readiness Polish
+
+- [x] Favicon — buat `public/favicon.svg`, tambah `icons` di root metadata
+- [x] Root metadata — tambah `viewport` export dengan `themeColor` (light/dark)
+- [x] Register Suspense — bungkus `<RegisterForm />` dengan `<Suspense>` (sama seperti Login)
+- [x] Auth error.tsx — `(auth)/error.tsx` dengan tombol Coba Lagi
+- [x] Auth loading.tsx — `(auth)/loading.tsx` skeleton form
+- [x] Dashboard metadata — export `title.template` agar sub-page punya judul spesifik
+- [x] Landing metadata — export `title` + `description` spesifik landing page
+- [x] global-error.tsx — root level catch-all error boundary
+- [x] Security headers — tambah `X-XSS-Protection` + `Permissions-Policy` di `next.config.ts`
+- [x] Build & lint — **0 errors, 0 warnings**
+
+---
+
+## Phase 20 — Mobile Polish (Kategori Page)
+
+- [x] Fix double padding — hapus `p-4 sm:p-6` dari wrapper kategori page (layout sudah handle)
+- [x] Fix create form — stack `flex-col` di mobile, tombol Buat terpisah
+- [x] Fix color picker overflow — 8 dot → 4 dot di mobile (`max-sm:hidden` untuk index >= 4)
+- [x] Fix delete modal — `w-80` → `w-[90vw] max-w-80` (tidak edge-to-edge di 320px)
 - [x] Build & lint — **0 errors, 0 warnings**
 

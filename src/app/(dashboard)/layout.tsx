@@ -1,7 +1,15 @@
+import type { Metadata } from "next";
 import { Sidebar } from "@/components/dashboard/sidebar";
 import { DashboardHeader } from "@/components/dashboard/dashboard-header";
 import { PageTransition } from "@/components/layout/page-transition";
 import { QueryProvider } from "@/components/providers/query-provider";
+
+export const metadata: Metadata = {
+  title: {
+    template: "%s - AgendaKu",
+    default: "Dashboard - AgendaKu",
+  },
+};
 
 export const dynamic = "force-dynamic";
 

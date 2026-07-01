@@ -74,7 +74,7 @@ export default function CategoriesPage() {
   }
 
   return (
-    <div className="mx-auto max-w-2xl space-y-6 p-4 sm:p-6">
+    <div className="mx-auto max-w-2xl space-y-6">
       <div>
         <h1 className="text-lg font-semibold tracking-tight text-foreground">Kategori</h1>
         <p className="mt-0.5 text-sm text-muted-foreground/70">
@@ -84,38 +84,50 @@ export default function CategoriesPage() {
 
       <div className="rounded-[14px] border border-border bg-card p-4">
         <h2 className="mb-3 text-sm font-semibold text-foreground">Buat Kategori Baru</h2>
-        <div className="flex items-center gap-2">
-          <input
-            type="text"
-            value={newName}
-            onChange={(e) => setNewName(e.target.value)}
-            onKeyDown={(e) => { if (e.key === "Enter") handleCreate(); }}
-            placeholder="Nama kategori..."
-            className="flex-1 rounded-[10px] border border-border/60 bg-surface px-3 py-2 text-sm text-foreground outline-none transition-all duration-150 focus:border-primary/40 focus:ring-2 focus:ring-primary/20"
-          />
-          <div className="flex items-center gap-1">
-            {presetColors.slice(0, 4).map((c) => (
-              <button
-                key={c}
-                type="button"
-                onClick={() => setNewColor(c)}
-                className={cn(
-                  "size-6 rounded-full border-2 transition-all duration-150",
-                  newColor === c ? "border-foreground scale-110" : "border-transparent",
-                )}
-                style={{ backgroundColor: c }}
-              />
-            ))}
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-2">
+          <div className="flex items-center gap-2">
+            <input
+              type="text"
+              value={newName}
+              onChange={(e) => setNewName(e.target.value)}
+              onKeyDown={(e) => { if (e.key === "Enter") handleCreate(); }}
+              placeholder="Nama kategori..."
+              className="flex-1 rounded-[10px] border border-border/60 bg-surface px-3 py-2 text-sm text-foreground outline-none transition-all duration-150 focus:border-primary/40 focus:ring-2 focus:ring-primary/20"
+            />
+            <button
+              type="button"
+              onClick={handleCreate}
+              disabled={!newName.trim() || createMutation.isPending}
+              className="flex items-center gap-1.5 rounded-[10px] bg-primary px-3 py-2 text-sm font-medium text-primary-foreground transition-all duration-150 hover:bg-primary/90 disabled:opacity-50 sm:hidden"
+            >
+              <Plus className="size-4" />
+            </button>
           </div>
-          <button
-            type="button"
-            onClick={handleCreate}
-            disabled={!newName.trim() || createMutation.isPending}
-            className="flex items-center gap-1.5 rounded-[10px] bg-primary px-3 py-2 text-sm font-medium text-primary-foreground transition-all duration-150 hover:bg-primary/90 disabled:opacity-50"
-          >
-            <Plus className="size-4" />
-            Buat
-          </button>
+          <div className="flex items-center justify-between gap-2 sm:justify-start">
+            <div className="flex items-center gap-1">
+              {presetColors.slice(0, 4).map((c) => (
+                <button
+                  key={c}
+                  type="button"
+                  onClick={() => setNewColor(c)}
+                  className={cn(
+                    "size-6 rounded-full border-2 transition-all duration-150",
+                    newColor === c ? "border-foreground scale-110" : "border-transparent",
+                  )}
+                  style={{ backgroundColor: c }}
+                />
+              ))}
+            </div>
+            <button
+              type="button"
+              onClick={handleCreate}
+              disabled={!newName.trim() || createMutation.isPending}
+              className="hidden sm:flex items-center gap-1.5 rounded-[10px] bg-primary px-3 py-2 text-sm font-medium text-primary-foreground transition-all duration-150 hover:bg-primary/90 disabled:opacity-50"
+            >
+              <Plus className="size-4" />
+              Buat
+            </button>
+          </div>
         </div>
       </div>
 
@@ -161,7 +173,7 @@ export default function CategoriesPage() {
               )}
               <span className="text-xs text-muted-foreground/50">{cat._count.todos} agenda</span>
               <div className="flex items-center gap-1">
-                {presetColors.map((c) => (
+                {presetColors.map((c, i) => (
                   <button
                     key={c}
                     type="button"
@@ -169,6 +181,7 @@ export default function CategoriesPage() {
                     className={cn(
                       "size-4 rounded-full border transition-all duration-150 hover:scale-110",
                       cat.color === c ? "border-foreground scale-110" : "border-transparent",
+                      i >= 4 && "max-sm:hidden",
                     )}
                     style={{ backgroundColor: c }}
                   />
@@ -200,7 +213,7 @@ export default function CategoriesPage() {
 
       {deleteConfirm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/20 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="delete-dialog-title">
-          <div className="w-80 rounded-[14px] border border-border bg-card p-5 shadow-lg">
+          <div className="w-[90vw] max-w-80 rounded-[14px] border border-border bg-card p-5 shadow-lg">
             <h3 id="delete-dialog-title" className="text-sm font-semibold text-foreground">Hapus Kategori</h3>
             <p className="mt-2 text-sm text-muted-foreground/70">
               Yakin ingin menghapus <span className="font-medium text-foreground">{deleteConfirm.name}</span>?
