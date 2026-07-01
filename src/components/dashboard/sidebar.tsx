@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { signOut } from "next-auth/react";
 import { cn } from "@/lib/utils";
 import {
   LayoutDashboard,
@@ -11,6 +12,7 @@ import {
   Tags,
   Calendar,
   Settings,
+  LogOut,
   Menu,
 } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -61,6 +63,16 @@ export function Sidebar() {
           </Link>
         );
       })}
+      <div className="mt-2 border-t border-border pt-2">
+        <button
+          type="button"
+          onClick={() => signOut({ callbackUrl: "/login" })}
+          className="flex w-full items-center gap-3 rounded-[10px] px-3 py-2 text-sm font-medium text-muted-foreground transition-all duration-150 hover:bg-muted/50 hover:text-foreground"
+        >
+          <LogOut className="size-4 shrink-0" />
+          Keluar
+        </button>
+      </div>
     </nav>
   );
 

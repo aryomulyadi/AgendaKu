@@ -2,7 +2,6 @@
 
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
-import { signIn } from "@/auth";
 import { registerSchema, type RegisterInput } from "@/lib/schemas/auth";
 
 export async function registerAction(data: RegisterInput) {
@@ -31,15 +30,5 @@ export async function registerAction(data: RegisterInput) {
     data: { name, email, password: hashedPassword },
   });
 
-  try {
-    await signIn("credentials", {
-      email,
-      password,
-      rememberMe: "true",
-      redirect: false,
-    });
-    return { success: true as const };
-  } catch {
-    return { error: "Akun berhasil dibuat, tetapi gagal masuk otomatis" };
-  }
+  return { success: true as const };
 }

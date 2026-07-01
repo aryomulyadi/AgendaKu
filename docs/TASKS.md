@@ -182,9 +182,21 @@
 - [x] TaskItem: prop baru `timePickerDate` — render hanya input time (date dari konteks kalender)
 - [x] Kalender page: task detail panel pakai `timePickerDate` agar user bisa set jam
 
-## Phase 9 — Rilis
+## Phase 9 — Finalisasi Rilis
 
-- [ ] Setup PostgreSQL
-- [ ] Testing
-- [ ] Deploy
+- [x] Migrasi `middleware.ts` → `proxy.ts` (convention Next.js 16)
+- [x] callbackUrl: baca `useSearchParams()` di LoginForm + redirect setelah login sukses
+- [x] Sidebar: tambah tombol "Keluar" dengan `signOut({ callbackUrl: "/login" })`
+- [x] Login page: bungkus `<LoginForm />` dengan `<Suspense>` (required untuk `useSearchParams`)
+- [x] Build & lint — 0 errors, 3 warnings (pre-existing img warnings)
+
+## Phase 10 — Bugfix & Polish
+
+- [x] Fix auto-login register — hapus server-side `signIn` dari `registerAction`, client-side `signIn` saja
+- [x] Tambah `.env.example` — dokumentasi env vars (`DATABASE_URL`, `AUTH_SECRET`, `AUTH_URL`)
+- [x] Pindah `prisma` dari `dependencies` → `devDependencies` di `package.json`
+- [x] Hapus dummy Credentials provider di `auth.config.ts` (real provider di `auth.ts`, array dikosongkan)
+- [x] Build & lint — 0 errors, 3 warnings (pre-existing img warnings)
+- [ ] Setup PostgreSQL (future)
+- [ ] Deploy (future)
 

@@ -1,5 +1,4 @@
 import type { NextAuthConfig } from "next-auth";
-import Credentials from "next-auth/providers/credentials";
 
 function base64url(str: string) {
   return btoa(str).replace(/=/g, "").replace(/\+/g, "-").replace(/\//g, "_");
@@ -24,6 +23,7 @@ async function signHmac(secret: string, data: string): Promise<string> {
 }
 
 export const authConfig: NextAuthConfig = {
+  providers: [],
   pages: {
     signIn: "/login",
     newUser: "/register",
@@ -74,19 +74,6 @@ export const authConfig: NextAuthConfig = {
       return payload;
     },
   },
-  providers: [
-    Credentials({
-      name: "credentials",
-      credentials: {
-        email: { label: "Email", type: "email" },
-        password: { label: "Password", type: "password" },
-        rememberMe: { label: "Remember Me", type: "hidden" },
-      },
-      async authorize() {
-        return null;
-      },
-    }),
-  ],
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
